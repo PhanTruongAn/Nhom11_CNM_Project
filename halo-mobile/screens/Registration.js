@@ -29,20 +29,24 @@ const Registration = ({ navigation }) => {
       password: password,
     };
 
-    let res = await userApi.register(user);
-    console.log(res);
-    if (res.data.EM) {
-      alert(res.data.EM);
-      Alert.alert(res.data.EM);
+    if (password === confirmPass) {
+      let res = await userApi.register(user);
+      if (res.data.EM) {
+        alert(res.data.EM);
+        Alert.alert(res.data.EM);
+      } else {
+        alert("Đăng ký thành công!");
+        Alert.alert("Đăng ký thành công!");
+        navigation.navigate("Login");
+        setName("");
+        setEmail("");
+        setPhone("");
+        setPassword("");
+        setConfirmPass("");
+      }
     } else {
-      alert("Success", "Đăng ký thành công!");
-      Alert.alert("Success", "Đăng ký thành công!");
-      navigation.navigate("Login");
-      setName("");
-      setEmail("");
-      setPhone("");
-      setPassword("");
-      setConfirmPass("");
+      alert("Mật khẩu xác nhận không đúng!");
+      Alert.alert("Mật khẩu xác nhận không đúng!");
     }
   };
 
