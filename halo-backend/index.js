@@ -3,8 +3,9 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import connectDB from "./connectDB";
-import User from "../../models/user";
+import connectDB from "./src/configs/connectDB";
+import User from "./models/user";
+import initAppRoutes from "./routes/api";
 const LocalStrategy = require("passport-local").Strategy;
 
 const app = express();
@@ -17,12 +18,4 @@ app.listen(PORT, () => {
   console.log(">>>>Server running on port: " + PORT);
 });
 connectDB();
-
-/// Registry from React-App
-app.post("/registry", (req, res) => {
-  const { name, phone, email, password } = req.body;
-  const newUser = new User({ name, phone, email, password });
-  newUser.save().then(() => {
-    res.status(200).json({ message: "User registered successfully ! " });
-  });
-});
+initAppRoutes(app);
