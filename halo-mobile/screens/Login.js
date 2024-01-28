@@ -15,65 +15,88 @@ const Login = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View>
+      <View style={{ top: 120, marginLeft: 10 }}>
         <Text style={styles.title}>Đăng nhập</Text>
       </View>
       <View style={styles.formContainer}>
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <View style={styles.inputContainer}>
-            <Icon name="mail" size={20} style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Số điện thoại hoặc email"
-              placeholderTextColor="#ABABAB"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Icon name="lock" size={20} style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              secureTextEntry={showPass ? false : true}
-              placeholder="Mật khẩu"
-              placeholderTextColor="#ABABAB"
-            />
-            <Icon
-              onPress={() => {
-                setShowPass(!showPass);
+        <View>
+          <View style={{ marginTop: 30 }}>
+            <Text
+              style={{
+                fontSize: 19,
+                fontWeight: "500",
+                alignSelf: "flex-start",
+                marginLeft: 20,
               }}
-              name={showPass ? "eye" : "eye-with-line"}
-              color={showPass ? "black" : "#ABABAB"}
-              size={25}
-              style={styles.eyeIcon}
+            >
+              Phone
+            </Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <Icon name="phone" size={25} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Số điện thoại"
+              placeholderTextColor="#ABABAB"
             />
           </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 19,
+                fontWeight: "500",
+                alignSelf: "flex-start",
+                marginLeft: 20,
+              }}
+            >
+              Password
+            </Text>
+            <View style={styles.inputContainer}>
+              <Icon name="lock" size={25} style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                secureTextEntry={showPass ? false : true}
+                placeholder="Mật khẩu"
+                placeholderTextColor="#ABABAB"
+              />
+              <Icon
+                onPress={() => {
+                  setShowPass(!showPass);
+                }}
+                name={showPass ? "eye" : "eye-with-line"}
+                color={showPass ? "black" : "#ABABAB"}
+                size={25}
+                style={styles.eyeIcon}
+              />
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              // Xử lý quên mật khẩu
+            }}
+          >
+            <Text style={styles.forgotPassword}>Quên mật khẩu ?</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-      <TouchableOpacity
-        onPress={() => {
-          // Xử lý quên mật khẩu
-        }}
-      >
-        <Text style={styles.forgotPassword}>Quên mật khẩu</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("HomeChat");
-        }}
-        style={styles.loginButton}
-      >
-        <Text style={styles.loginButtonText}>Đăng nhập</Text>
-      </TouchableOpacity>
-      <View style={styles.registerContainer}>
-        <Text>Bạn chưa có tài khoản ?</Text>
+
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Registration");
+            navigation.navigate("HomeChat");
           }}
+          style={styles.loginButton}
         >
-          <Text style={styles.registerText}>Đăng ký</Text>
+          <Text style={styles.loginButtonText}>Đăng nhập</Text>
         </TouchableOpacity>
+        <View style={styles.registerContainer}>
+          <Text>Bạn chưa có tài khoản ?</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Registration");
+            }}
+          >
+            <Text style={styles.registerText}>Đăng ký</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -82,28 +105,28 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
+    backgroundColor: "#1faeeb",
     justifyContent: "center",
   },
 
   title: {
-    color: "#1faeeb",
+    color: "white",
     fontSize: 35,
     fontWeight: "500",
   },
   formContainer: {
     width: "100%",
-    marginTop: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    height: "75%",
+    marginTop: 150,
+    backgroundColor: "white",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   inputContainer: {
     alignSelf: "center",
-    width: "100%",
+    width: "90%",
     height: 50,
-    borderWidth: 1,
-    borderRadius: 5,
+    borderBottomWidth: 1,
     borderColor: "#ABABAB",
     marginBottom: 20,
     flexDirection: "row",
@@ -124,17 +147,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   forgotPassword: {
-    marginLeft: 90,
     color: "#1faeeb",
-    marginTop: -18,
+    marginTop: -10,
+    marginLeft: 20,
   },
   loginButton: {
-    width: "70%",
+    width: "80%",
     height: 40,
     backgroundColor: "#1faeeb",
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "center",
     marginTop: 30,
   },
   loginButtonText: {
@@ -143,7 +167,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   registerContainer: {
-    marginTop: 20,
+    marginTop: 5,
+    alignSelf: "center",
     flexDirection: "row",
   },
   registerText: {

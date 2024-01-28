@@ -1,40 +1,47 @@
 import mongoose from "mongoose";
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    require: true,
-  },
-  phone: {
-    type: String,
-    require: true,
-  },
-  email: {
-    type: String,
-    require: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    require: true,
-  },
-  friendRequests: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      require: true,
     },
-  ],
-  sendFriendRequests: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    phone: {
+      type: String,
+      require: true,
+      unique: true,
     },
-  ],
-  friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    email: {
+      type: String,
+      require: true,
     },
-  ],
-});
+    password: {
+      type: String,
+      require: true,
+    },
+    isActive: {
+      type: String,
+      default: "0",
+    },
+    friendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    sendFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 const User = mongoose.model("User", userSchema);
 module.exports = User;

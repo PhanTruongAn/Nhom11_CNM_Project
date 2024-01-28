@@ -13,11 +13,11 @@ const userRegistry = async (user) => {
   if (nameCheck.EC !== 0) {
     return nameCheck;
   }
-  const phoneCheck = userValidate.checkPhone(user.phone);
+  const phoneCheck = await userValidate.checkPhone(user.phone);
   if (phoneCheck.EC !== 0) {
     return phoneCheck;
   }
-  const emailCheck = await userValidate.checkEmail(user.email);
+  const emailCheck = userValidate.checkEmail(user.email);
   if (emailCheck.EC !== 0) {
     return emailCheck;
   }

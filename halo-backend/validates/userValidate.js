@@ -11,14 +11,19 @@ const userValidate = {
       EC: 0,
     };
   },
-  checkPhone: (phone) => {
+  checkPhone: async (phone) => {
     const regex = /^0[0-9]{9,10}$/;
     if (!regex.test(phone)) {
       return {
         EM: "Số điện thoại phải là số hợp lệ!",
       };
     }
-
+    const exist = await User.findOne({ phone: phone }).exec();
+    if (exist) {
+      return {
+        EM: "Số điện thoại đã được sử dụng!",
+      };
+    }
     return {
       EC: 0,
     };
@@ -39,7 +44,7 @@ const userValidate = {
       EC: 0,
     };
   },
-  checkEmail: async (email) => {
+  checkEmail: (email) => {
     // Email dạng example@example.com
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(email)) {
@@ -47,12 +52,7 @@ const userValidate = {
         EM: "Email không hợp lệ!",
       };
     }
-    const exist = await User.findOne({ email: email }).exec();
-    if (exist) {
-      return {
-        EM: "Email đã được sử dụng!",
-      };
-    }
+
     return {
       EC: 0,
     };

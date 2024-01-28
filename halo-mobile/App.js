@@ -34,7 +34,7 @@ const App = () => {
           ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <Registration /> */}
+      {/* <Login /> */}
     </>
   );
 };
