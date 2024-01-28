@@ -7,12 +7,37 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
+import userApi from "../api/userApi";
 
 const Login = ({ navigation }) => {
   const [showPass, setShowPass] = useState(false);
-
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const handlerLogin = async () => {
+    const user = {
+      phone: phone,
+      password: password,
+    };
+    if (phone !== "" && password !== "") {
+      let res = await userApi.login(user);
+      if (res.data.EM) {
+        alert(res.data.EM);
+        Alert.alert(res.data.EM);
+      } else {
+        alert("Đăng nhập thành công!");
+        Alert.alert("Đăng nhập thành công!");
+        navigation.navigate("HomeChat");
+        setPhone("");
+        setPassword("");
+      }
+    } else {
+      alert("Hãy nhập đầy đủ thông tin!");
+      Alert.alert("Hãy nhập đầy đủ thông tin!");
+    }
+  };
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={{ top: 120, marginLeft: 10 }}>
@@ -35,6 +60,8 @@ const Login = ({ navigation }) => {
           <View style={styles.inputContainer}>
             <Icon name="phone" size={25} style={styles.icon} />
             <TextInput
+              value={phone}
+              onChangeText={(e) => setPhone(e)}
               style={styles.input}
               placeholder="Số điện thoại"
               placeholderTextColor="#ABABAB"
@@ -54,6 +81,8 @@ const Login = ({ navigation }) => {
             <View style={styles.inputContainer}>
               <Icon name="lock" size={25} style={styles.icon} />
               <TextInput
+                value={password}
+                onChangeText={(e) => setPassword(e)}
                 style={styles.input}
                 secureTextEntry={showPass ? false : true}
                 placeholder="Mật khẩu"
@@ -79,12 +108,7 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("HomeChat");
-          }}
-          style={styles.loginButton}
-        >
+        <TouchableOpacity onPress={handlerLogin} style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Đăng nhập</Text>
         </TouchableOpacity>
         <View style={styles.registerContainer}>

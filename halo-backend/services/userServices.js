@@ -33,6 +33,27 @@ const userRegistry = async (user) => {
     EC: 0,
   };
 };
+// User Login
+const userLogin = async (user) => {
+  const account = await User.findOne({ phone: user.phone }).exec();
+  if (!account) {
+    return {
+      EM: "Số điện thoại không tồn tại!",
+    };
+  }
+
+  const comparePassword = bcrypt.compareSync(user.password, account.password);
+  if (comparePassword) {
+    return {
+      EC: 0,
+    };
+  } else {
+    return {
+      EM: "Mật khẩu không đúng!",
+    };
+  }
+};
 module.exports = {
   userRegistry,
+  userLogin,
 };

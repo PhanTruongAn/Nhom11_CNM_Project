@@ -8,6 +8,7 @@ const router = express.Router();
 
 const initAppRoutes = (app) => {
   router.post("/registry", userController.handlerRegistry);
+  router.post("/login", userController.handleLogin);
   return app.use("/", router);
 };
 export default initAppRoutes;

@@ -19,6 +19,7 @@ const userValidate = {
       };
     }
     const exist = await User.findOne({ phone: phone }).exec();
+
     if (exist) {
       return {
         EM: "Số điện thoại đã được sử dụng!",
