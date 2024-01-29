@@ -30,10 +30,10 @@ const Registration = ({ navigation }) => {
     };
 
     if (password === confirmPass) {
-      let res = await userApi.register(user);
-      if (res.data.EM) {
-        alert(res.data.EM);
-        Alert.alert(res.data.EM);
+      let req = await userApi.register(user);
+      if (req.EM) {
+        alert(req.EM);
+        Alert.alert(req.EM);
       } else {
         alert("Đăng ký thành công!");
         Alert.alert("Đăng ký thành công!");

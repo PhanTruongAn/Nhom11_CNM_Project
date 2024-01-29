@@ -7,20 +7,19 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useDispatch, useSelector } from "react-redux";
 const SettingsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userLogin.user);
+  // console.log(user);
   // Sample user data (replace with your actual user data)
-  const userData = {
-    name: "John Doe",
-    // avatar: require("./path/to/avatar.jpg"), // Replace with the actual path to the avatar image
-  };
 
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.avatarPlaceholder} />
-        <Text style={styles.userName}>{userData.name}</Text>
+        <Text style={styles.userName}>{user.name}</Text>
       </View>
 
       {/* Settings Sections */}

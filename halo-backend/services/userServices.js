@@ -2,6 +2,7 @@
 import User from "../models/user";
 import bcrypt from "bcrypt";
 import userValidate from "../validates/userValidate";
+import jwtService from "../jwt/jwtServices";
 const salt = bcrypt.genSaltSync(10);
 const hashPassword = (password) => {
   const hash = bcrypt.hashSync(password, salt);
@@ -44,8 +45,10 @@ const userLogin = async (user) => {
 
   const comparePassword = bcrypt.compareSync(user.password, account.password);
   if (comparePassword) {
+    let token = await jwtService.signToken(account.phone);
     return {
       EC: 0,
+      DT: token,
     };
   } else {
     return {

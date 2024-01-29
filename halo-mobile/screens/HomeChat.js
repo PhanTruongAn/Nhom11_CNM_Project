@@ -1,36 +1,83 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  StyleSheet,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const ChatListItem = ({ name, message, time, unreadCount }) => {
-  return (
-    <View style={styles.container}>
+const ChatListScreen = ({ navigation }) => {
+  const [chatList, setChatList] = useState([
+    {
+      id: "1",
+      name: "Friend 1",
+      message: "Hello",
+      time: "12:30 PM",
+      unreadCount: 2,
+    },
+    {
+      id: "2",
+      name: "Friend 2",
+      message: "Hi there",
+      time: "1:45 PM",
+      unreadCount: 0,
+    },
+    // ... more chat items
+  ]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredChatList = chatList.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("ChatScreen");
+      }}
+      style={styles.itemContainer}
+    >
       <View style={styles.avatarPlaceholder} />
       <View style={styles.content}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.message}>{message}</Text>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.message}>{item.message}</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.time}>{time}</Text>
-        {unreadCount > 0 && (
+        <Text style={styles.time}>{item.time}</Text>
+        {item.unreadCount > 0 && (
           <View style={styles.unreadBadge}>
-            <Text>{unreadCount}</Text>
+            <Text>{item.unreadCount}</Text>
           </View>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
-};
 
-const ChatListScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
-      <ChatListItem
-        name="Tomikien - Điều Pham Quang Đức"
-        message="Đã gửi một sticker"
-        time="31 phút"
-        unreadCount={0}
+      <View style={styles.searchContainer}>
+        <Ionicons
+          name="search"
+          size={24}
+          color="#555"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+      </View>
+      <FlatList
+        data={filteredChatList}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
       />
-      {/* Thêm các mục chat khác tại đây */}
     </View>
   );
 };
@@ -40,17 +87,39 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  container: {
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    backgroundColor: "#3498db", // Màu xanh dương
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5, // Thêm padding để giữ giao diện hợp lý
+    width: "100%",
+  },
+  searchIcon: {
+    marginRight: 10,
+    color: "white", // Màu của icon search
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 8,
+    fontSize: 16,
+    color: "black", // Màu chữ khi nhập text
+  },
+  itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   avatarPlaceholder: {
     width: 50,
     height: 50,
     borderRadius: 25,
     marginRight: 15,
-    backgroundColor: "#ddd", // Màu sắc hoặc hình nền tạm thời để thay thế cho ảnh
+    backgroundColor: "#ddd",
   },
   content: {
     flex: 1,

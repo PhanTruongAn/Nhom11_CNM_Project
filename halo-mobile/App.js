@@ -4,36 +4,46 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Registration from "./screens/Registration";
 import BottomTabNavigator from "./screens/TabButton";
+import ChatScreen from "./screens/Chat";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Home"
-            component={Home}
-          ></Stack.Screen>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={Login}
-          ></Stack.Screen>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Registration"
-            component={Registration}
-          ></Stack.Screen>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="HomeChat"
-            component={BottomTabNavigator}
-          ></Stack.Screen>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Home"
+              component={Home}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Login"
+              component={Login}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Registration"
+              component={Registration}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="BottomTabNavigator"
+              component={BottomTabNavigator}
+            ></Stack.Screen>
+            <Stack.Screen
+              // options={{ headerShown: false }}
+              name="ChatScreen"
+              component={ChatScreen}
+            ></Stack.Screen>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+
       {/* <Login /> */}
     </>
   );

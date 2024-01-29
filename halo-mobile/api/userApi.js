@@ -9,5 +9,9 @@ const userApi = {
     const url = "/login";
     return axiosClient.post(url, userAccount);
   },
+  loginUser: () => {
+    const url = "/login-user";
+    return axiosClient.get(url);
+  },
 };
 export default userApi;

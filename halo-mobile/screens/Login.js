@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import userApi from "../api/userApi";
-
+import { useDispatch } from "react-redux";
+import { fetchUserToken } from "../redux/userSlice";
 const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [showPass, setShowPass] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -22,14 +24,16 @@ const Login = ({ navigation }) => {
       password: password,
     };
     if (phone !== "" && password !== "") {
-      let res = await userApi.login(user);
-      if (res.data.EM) {
-        alert(res.data.EM);
-        Alert.alert(res.data.EM);
+      let req = await userApi.login(user);
+
+      if (req.EM) {
+        alert(req.EM);
+        Alert.alert(req.EM);
       } else {
+        await dispatch(fetchUserToken());
         alert("Đăng nhập thành công!");
         Alert.alert("Đăng nhập thành công!");
-        navigation.navigate("HomeChat");
+        navigation.navigate("BottomTabNavigator");
         setPhone("");
         setPassword("");
       }
