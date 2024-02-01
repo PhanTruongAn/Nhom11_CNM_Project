@@ -8,6 +8,7 @@ import ChatScreen from "./screens/Chat";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import SearchScreen from "./screens/SearchScreen";
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -36,9 +37,14 @@ const App = () => {
               component={BottomTabNavigator}
             ></Stack.Screen>
             <Stack.Screen
-              // options={{ headerShown: false }}
+              options={{ headerShown: false }}
               name="ChatScreen"
               component={ChatScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="SearchScreen"
+              component={SearchScreen}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

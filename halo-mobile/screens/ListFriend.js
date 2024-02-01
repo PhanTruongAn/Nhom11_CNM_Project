@@ -6,24 +6,12 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Animated,
-  Easing,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const FriendListScreen = ({ navigation }) => {
   const [isFriendsTab, setFriendsTab] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const fadeAnim = new Animated.Value(0);
-
-  const fadeIn = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  };
 
   const friendsData = [
     { id: "1", name: "Friend 1" },
@@ -42,22 +30,20 @@ const FriendListScreen = ({ navigation }) => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  fadeIn();
-
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+  const onFocusSearch = () => {
+    navigation.navigate("SearchScreen");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Animated.View
-          style={{
-            ...styles.searchContainer,
-            opacity: fadeAnim,
-            transform: [{ perspective: 1000 }, { rotateX: "20deg" }],
-          }}
-        >
+        <View style={styles.searchContainer} onTouchStart={onFocusSearch}>
           <Ionicons
             name="search"
             size={24}
-            color="#555"
+            color="white" // Màu trắng
             style={styles.searchIcon}
           />
           <TextInput
@@ -66,23 +52,26 @@ const FriendListScreen = ({ navigation }) => {
             value={searchQuery}
             onChangeText={(text) => setSearchQuery(text)}
           />
-        </Animated.View>
+          {searchQuery !== "" && (
+            <TouchableOpacity onPress={clearSearch}>
+              <Ionicons
+                name="close-circle"
+                size={24}
+                color="black" // Màu đen
+                style={styles.clearIcon}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[
-              styles.tabButton,
-              isFriendsTab && styles.activeTab,
-              {
-                opacity: fadeAnim,
-                transform: [{ perspective: 1000 }, { rotateX: "20deg" }],
-              },
-            ]}
+            style={[styles.tabButton, isFriendsTab && styles.activeTab]}
             onPress={() => setFriendsTab(true)}
           >
             <Ionicons
               name="people"
               size={24}
-              color={isFriendsTab ? "white" : "#555"}
+              color={isFriendsTab ? "darkblue" : "#555"}
             />
             <Text
               style={[styles.tabText, isFriendsTab && styles.activeTabText]}
@@ -91,20 +80,13 @@ const FriendListScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.tabButton,
-              !isFriendsTab && styles.activeTab,
-              {
-                opacity: fadeAnim,
-                transform: [{ perspective: 1000 }, { rotateX: "20deg" }],
-              },
-            ]}
+            style={[styles.tabButton, !isFriendsTab && styles.activeTab]}
             onPress={() => setFriendsTab(false)}
           >
             <Ionicons
               name="business"
               size={24}
-              color={!isFriendsTab ? "white" : "#555"}
+              color={!isFriendsTab ? "darkblue" : "#555"}
             />
             <Text
               style={[styles.tabText, !isFriendsTab && styles.activeTabText]}
@@ -115,25 +97,19 @@ const FriendListScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <Animated.View
-        style={{
-          opacity: fadeAnim,
-          transform: [{ perspective: 1000 }, { rotateX: "20deg" }],
-        }}
-      >
-        <FlatList
-          data={filteredData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.itemContainer}>
-              <Text style={styles.itemText}>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </Animated.View>
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.itemContainer}>
+            <Text style={styles.itemText}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -147,17 +123,21 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#eee",
+    backgroundColor: "#3498db", // Màu xanh dương đậm
     borderRadius: 5,
     paddingHorizontal: 10,
   },
   searchIcon: {
     marginRight: 10,
   },
+  clearIcon: {
+    marginLeft: 10,
+  },
   searchInput: {
     flex: 1,
     paddingVertical: 8,
     fontSize: 16,
+    color: "white",
   },
   tabContainer: {
     flexDirection: "row",
@@ -183,9 +163,6 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: "white",
-  },
-  listContainer: {
-    flex: 1,
   },
   itemContainer: {
     padding: 16,

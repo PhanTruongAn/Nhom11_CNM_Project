@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   FlatList,
@@ -29,10 +29,20 @@ const ChatListScreen = ({ navigation }) => {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef(null);
 
   const filteredChatList = chatList.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    searchInputRef.current.clear();
+  };
+
+  const onFocusSearch = () => {
+    navigation.navigate("SearchScreen");
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -59,7 +69,7 @@ const ChatListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.searchContainer}>
+      <View style={styles.searchContainer} onTouchStart={onFocusSearch}>
         <Ionicons
           name="search"
           size={24}
@@ -67,11 +77,22 @@ const ChatListScreen = ({ navigation }) => {
           style={styles.searchIcon}
         />
         <TextInput
+          ref={searchInputRef}
           style={styles.searchInput}
           placeholder="Search"
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
         />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={clearSearch}>
+            <Ionicons
+              name="close-circle"
+              size={24}
+              color="#555"
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <FlatList
         data={filteredChatList}
@@ -94,18 +115,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#3498db", // Màu xanh dương
     borderRadius: 5,
     paddingHorizontal: 10,
-    paddingVertical: 5, // Thêm padding để giữ giao diện hợp lý
+    paddingVertical: 5,
     width: "100%",
   },
   searchIcon: {
     marginRight: 10,
-    color: "white", // Màu của icon search
+    color: "white",
   },
   searchInput: {
     flex: 1,
     paddingVertical: 8,
     fontSize: 16,
-    color: "black", // Màu chữ khi nhập text
+    color: "black",
+  },
+  clearIcon: {
+    marginLeft: 10,
+    color: "black",
   },
   itemContainer: {
     flexDirection: "row",
