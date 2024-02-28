@@ -45,7 +45,12 @@ const SettingsScreen = ({ navigation }) => {
       {/* Settings Sections */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Personal Information</Text>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => {
+            navigation.navigate("Information");
+          }}
+        >
           <Ionicons
             name="person"
             size={24}

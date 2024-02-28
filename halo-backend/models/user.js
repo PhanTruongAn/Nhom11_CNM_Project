@@ -25,9 +25,16 @@ const userSchema = new mongoose.Schema(
         },
         color: {
           type: String,
-          
         },
       },
+    },
+    sex: {
+      type: String,
+      default: "",
+    },
+    dateOfBirth: {
+      type: String,
+      default: "",
     },
     isActive: {
       type: String,

@@ -8,7 +8,7 @@ export const checkCookie = async (req, res, next) => {
     if (decoded && decoded.data) {
       let user = await User.findOne(
         { phone: decoded.data },
-        "_id name phone email avatar isActive friendRequests sendFriendRequests friends"
+        "_id name phone email avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
       ).exec();
       if (user) {
         req.user = {

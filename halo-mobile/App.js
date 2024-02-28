@@ -5,6 +5,8 @@ import Login from "./screens/Login";
 import Registration from "./screens/Registration";
 import BottomTabNavigator from "./screens/TabButton";
 import ChatScreen from "./screens/Chat";
+import Information from "./screens/Information";
+import EditInformation from "./screens/EditInformation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
@@ -46,11 +48,22 @@ const App = () => {
               name="SearchScreen"
               component={SearchScreen}
             ></Stack.Screen>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Information"
+              component={Information}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{
+                headerTitle: "Chỉnh sửa thông tin",
+              }}
+              name="EditInformation"
+              component={EditInformation}
+            ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
+        {/* <Information /> */}
       </Provider>
-
-      {/* <Login /> */}
     </>
   );
 };
