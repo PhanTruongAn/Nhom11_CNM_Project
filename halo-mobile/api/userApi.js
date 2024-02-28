@@ -13,5 +13,9 @@ const userApi = {
     const url = "/login-user";
     return axiosClient.get(url);
   },
+  searchByPhone: (user) => {
+    const url = "/searchByPhone";
+    return axiosClient.post(url, user);
+  },
 };
 export default userApi;

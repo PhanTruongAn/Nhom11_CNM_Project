@@ -8,17 +8,18 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import userApi from "../api/userApi";
 
 // Component for displaying contact details
-const ContactDetails = ({ contact }) => {
+const ContactDetails = ({ user }) => {
   return (
     <View style={styles.contactDetailsContainer}>
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}></View>
       </View>
       <View style={styles.contactInfo}>
-        <Text style={styles.contactName}>{contact.name}</Text>
-        <Text style={styles.contactPhone}>{contact.phone}</Text>
+        <Text style={styles.contactName}>{user.name}</Text>
+        <Text style={styles.contactPhone}>{user.phone}</Text>
       </View>
     </View>
   );
@@ -26,25 +27,8 @@ const ContactDetails = ({ contact }) => {
 
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showNoResults, setShowNoResults] = useState(false);
-
-  const contactData = [
-    { id: "1", name: "John Doe", phone: "123456789" },
-    { id: "2", name: "Jane Doe", phone: "987654321" },
-    // Add more contacts
-  ];
-
-  const handleSearch = () => {
-    const results = contactData.filter(
-      (contact) =>
-        contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contact.phone.includes(searchQuery)
-    );
-
-    setSearchResults(results);
-    setShowNoResults(results.length === 0);
-  };
+  const [searchResults, setSearchResults] = useState("");
+  const [showResults, setShowNoResults] = useState(false);
 
   const handleBack = () => {
     navigation.goBack();
@@ -65,10 +49,6 @@ const SearchScreen = ({ navigation }) => {
     }
   };
 
-  const handleSearchIconPress = () => {
-    handleSearch();
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -81,50 +61,46 @@ const SearchScreen = ({ navigation }) => {
               style={styles.backIcon}
             />
           </TouchableOpacity>
-          <Ionicons
-            name="search"
-            size={24}
-            color="#555"
-            style={styles.searchIcon}
-            onPress={handleSearchIconPress}
-          />
+          <TouchableOpacity>
+            <Ionicons
+              name="search"
+              size={24}
+              color="#555"
+              style={styles.searchIcon}
+            />
+          </TouchableOpacity>
+
           <TextInput
             style={styles.searchInput}
             placeholder="Search by phone"
             value={searchQuery}
-            onChangeText={(text) => setSearchQuery(text)}
+            onChangeText={async (e) => {
+              const user = {
+                phone: e,
+              };
+              setSearchQuery(e);
+              const req = await userApi.searchByPhone(user);
+              if (req.DT) {
+                setSearchResults(req.DT);
+                setShowNoResults(true);
+              }
+            }}
           />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={clearSearch}>
-              <Ionicons
-                name="close-circle"
-                size={24}
-                color="black"
-                style={styles.clearIcon}
-              />
-            </TouchableOpacity>
-          )}
+
+          <TouchableOpacity onPress={clearSearch}>
+            <Ionicons
+              name="close-circle"
+              size={24}
+              color="black"
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
         </View>
       </View>
-      {showNoResults ? (
-        <Text>No results found.</Text>
+      {showResults ? (
+        <ContactDetails user={searchResults} />
       ) : (
-        searchResults.length > 0 && (
-          <FlatList
-            data={searchResults}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  console.log("Selected Contact:", item);
-                }}
-                style={styles.resultItem}
-              >
-                <ContactDetails contact={item} />
-              </TouchableOpacity>
-            )}
-          />
-        )
+        <Text>No results found.</Text>
       )}
     </View>
   );
@@ -163,11 +139,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     fontSize: 16,
-    color: "black",
+    color: "white",
   },
   contactDetailsContainer: {
     marginTop: 20,
-    flexDirection: "row", // Change to row direction
+    flexDirection: "row",
     alignItems: "center",
   },
   avatarContainer: {

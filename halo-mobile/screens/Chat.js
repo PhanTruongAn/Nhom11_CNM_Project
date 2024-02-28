@@ -10,9 +10,9 @@ import {
   Text,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import ImagePicker from "react-native-image-picker";
+// import ImagePicker from "react-native-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import IconPickerModal from "./IconPickerModal";
+// import IconPickerModal from "./IconPickerModal";
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([
@@ -29,15 +29,15 @@ const ChatScreen = () => {
   const navigation = useNavigation();
 
   const handleImagePick = () => {
-    ImagePicker.showImagePicker((response) => {
-      if (!response.didCancel && !response.error) {
-        setSelectedImage(response.uri);
-      }
-    });
+    // ImagePicker.showImagePicker((response) => {
+    //   if (!response.didCancel && !response.error) {
+    //     setSelectedImage(response.uri);
+    //   }
+    // });
   };
 
   const handleOpenIconPicker = () => {
-    setIconPickerModalVisible(true);
+    // setIconPickerModalVisible(true);
   };
 
   const handleIconPick = (selectedIcon) => {

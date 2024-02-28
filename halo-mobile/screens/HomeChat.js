@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import SearchScreen from "./SearchScreen";
 const ChatListScreen = ({ navigation }) => {
   const [chatList, setChatList] = useState([
     {
@@ -69,7 +69,7 @@ const ChatListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.searchContainer} onTouchStart={onFocusSearch}>
+      <TouchableOpacity style={styles.searchContainer} onPress={onFocusSearch}>
         <Ionicons
           name="search"
           size={24}
@@ -93,7 +93,7 @@ const ChatListScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         )}
-      </View>
+      </TouchableOpacity>
       <FlatList
         data={filteredChatList}
         keyExtractor={(item) => item.id}
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#fff",
   },
   searchContainer: {
     flexDirection: "row",
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#3498db", // Màu xanh dương
     borderRadius: 5,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    // paddingVertical: 5,
     width: "100%",
   },
   searchIcon: {
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     fontSize: 16,
-    color: "black",
+    color: "white",
   },
   clearIcon: {
     marginLeft: 10,

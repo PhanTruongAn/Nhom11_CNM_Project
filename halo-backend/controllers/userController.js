@@ -55,8 +55,21 @@ const handlerLoginUser = async (req, res) => {
     });
   }
 };
+const handlerSearchByPhone = async (req, res) => {
+  try {
+    let data = await userService.searchByPhone(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handlerRegistry,
   handleLogin,
   handlerLoginUser,
+  handlerSearchByPhone,
 };

@@ -56,7 +56,24 @@ const userLogin = async (user) => {
     };
   }
 };
+// SearchByPhone
+const searchByPhone = async (user) => {
+  const account = await User.findOne(
+    { phone: user.phone },
+    "name phone"
+  ).exec();
+  if (!account) {
+    return {
+      EM: "Số điện thoại không tồn tại!",
+    };
+  }
+  return {
+    DT: account,
+    EC: 0,
+  };
+};
 module.exports = {
   userRegistry,
   userLogin,
+  searchByPhone,
 };

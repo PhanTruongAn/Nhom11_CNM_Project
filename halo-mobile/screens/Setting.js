@@ -8,17 +8,56 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+import { Avatar } from "@rneui/themed";
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin.user);
-  // console.log(user);
-  // Sample user data (replace with your actual user data)
+
+  const getRandomColor = () => {
+    // Tạo một màu ngẫu nhiên bằng cách sử dụng Math.random()
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  //Hàm tách lấy 2 chữ cái đầu họ và tên
+  const layChuCaiDau = (tenDayDu) => {
+    // Tách chuỗi thành mảng các từ
+    const danhSachTu = tenDayDu.split(" ");
+
+    // Lấy chữ cái đầu của họ và chữ cái đầu của tên đệm
+    const ho = danhSachTu[0][0].toUpperCase();
+    const tenDem = danhSachTu
+      .slice(1, -1)
+      .map((tu) => tu[0].toUpperCase())
+      .join(" ");
+    // Lấy chữ cái đầu của tên
+    const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
+    // Trả về kết quả
+    return {
+      ho,
+      tenDem,
+      ten,
+    };
+  };
+
+  // Ví dụ sử dụng
+  const ketQua = layChuCaiDau(user.name);
+  const avatar = ketQua.ho + "" + ketQua.ten;
 
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <View style={styles.avatarPlaceholder} />
+        <Avatar
+          size={80}
+          rounded
+          title={avatar}
+          containerStyle={{ backgroundColor: getRandomColor() }}
+        />
+        {/* <View style={styles.avatarPlaceholder} /> */}
         <Text style={styles.userName}>{user.name}</Text>
       </View>
 
