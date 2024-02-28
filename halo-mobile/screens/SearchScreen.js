@@ -8,14 +8,22 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Avatar } from "@rneui/themed";
 import userApi from "../api/userApi";
-
-// Component for displaying contact details
 const ContactDetails = ({ user }) => {
+  const danhSachTu = user.name.split(" ");
+  const ho = danhSachTu[0][0].toUpperCase();
+  const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
+  const result = ho + "" + ten;
   return (
     <View style={styles.contactDetailsContainer}>
       <View style={styles.avatarContainer}>
-        <View style={styles.avatar}></View>
+        <Avatar
+          size={50}
+          rounded
+          title={result}
+          containerStyle={{ backgroundColor: user.avatar.color }}
+        />
       </View>
       <View style={styles.contactInfo}>
         <Text style={styles.contactName}>{user.name}</Text>
@@ -81,6 +89,7 @@ const SearchScreen = ({ navigation }) => {
               setSearchQuery(e);
               const req = await userApi.searchByPhone(user);
               if (req.DT) {
+                console.log(req.DT);
                 setSearchResults(req.DT);
                 setShowNoResults(true);
               }

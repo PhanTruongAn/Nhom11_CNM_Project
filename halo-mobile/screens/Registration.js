@@ -20,13 +20,37 @@ const Registration = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-
+  const getRandomColor = () => {
+    // Tạo một màu ngẫu nhiên bằng cách sử dụng Math.random()
+    const colors = [
+      "#a650e8",
+      "#0ecff9",
+      "#1877f2",
+      "#fb02c7",
+      "#f96502",
+      "#f9f102",
+      "#2bf902",
+      "#f902a3",
+      "#9f02f9",
+      "#02f9e9",
+      "#f1f902",
+      "#FF6347",
+      "#FF8C00",
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    const randomColor = colors[randomIndex];
+    return randomColor;
+  };
   const handleRegister = async () => {
     const user = {
       name: name,
       phone: phone,
       email: email,
       password: password,
+      avatar: {
+        uri: "",
+        color: getRandomColor(),
+      },
     };
 
     if (password === confirmPass) {

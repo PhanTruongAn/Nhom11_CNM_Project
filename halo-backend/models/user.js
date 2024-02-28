@@ -18,6 +18,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    avatar: {
+      type: {
+        uri: {
+          type: String,
+        },
+        color: {
+          type: String,
+          
+        },
+      },
+    },
     isActive: {
       type: String,
       default: "0",

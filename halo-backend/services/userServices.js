@@ -60,7 +60,7 @@ const userLogin = async (user) => {
 const searchByPhone = async (user) => {
   const account = await User.findOne(
     { phone: user.phone },
-    "name phone"
+    "name phone avatar"
   ).exec();
   if (!account) {
     return {
