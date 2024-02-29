@@ -12,7 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 // import ImagePicker from "react-native-image-picker";
 import { useNavigation } from "@react-navigation/native";
-// import IconPickerModal from "./IconPickerModal";
+import IconPickerModal from "./IconPickerModal";
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([
@@ -37,13 +37,13 @@ const ChatScreen = () => {
   };
 
   const handleOpenIconPicker = () => {
-    // setIconPickerModalVisible(true);
+    setIconPickerModalVisible(true);
   };
 
   const handleIconPick = (selectedIcon) => {
     // Cập nhật biểu tượng khi người dùng chọn
     // setSelectedIcon(selectedIcon);
-    setIconPickerModalVisible(false);
+    // setIconPickerModalVisible(false);
   };
 
   const handleSend = () => {

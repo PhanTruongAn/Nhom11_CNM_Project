@@ -55,7 +55,7 @@ const App = () => {
             ></Stack.Screen>
             <Stack.Screen
               options={{
-                headerTitle: "Chỉnh sửa thông tin",
+                headerShown: false,
               }}
               name="EditInformation"
               component={EditInformation}

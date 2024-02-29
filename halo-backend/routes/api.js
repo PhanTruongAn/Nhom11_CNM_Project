@@ -13,6 +13,7 @@ const initAppRoutes = (app) => {
   router.post("/login", userController.handleLogin);
   router.get("/login-user", checkCookie, userController.handlerLoginUser);
   router.post("/searchByPhone", userController.handlerSearchByPhone);
+  router.post("/update-user", userController.handlerUpdateUser);
   return app.use("/", router);
 };
 export default initAppRoutes;

@@ -17,5 +17,9 @@ const userApi = {
     const url = "/searchByPhone";
     return axiosClient.post(url, user);
   },
+  updateUser: (user) => {
+    const url = "/update-user";
+    return axiosClient.post(url, user);
+  },
 };
 export default userApi;

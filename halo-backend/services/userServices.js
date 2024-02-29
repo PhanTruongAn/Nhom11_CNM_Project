@@ -72,8 +72,41 @@ const searchByPhone = async (user) => {
     EC: 0,
   };
 };
+// Update Information User
+const updateUser = async (newData) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: newData._id },
+      {
+        $set: {
+          name: newData.name,
+          sex: newData.sex,
+          dateOfBirth: newData.dateOfBirth,
+        },
+      },
+      {
+        new: true,
+        select:
+          "_id name phone email avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends",
+      }
+    );
+
+    if (!updatedUser) {
+      console.log("User not found");
+      return null;
+    }
+    return {
+      DT: updatedUser,
+      EC: 0,
+    };
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+};
 module.exports = {
   userRegistry,
   userLogin,
   searchByPhone,
+  updateUser,
 };

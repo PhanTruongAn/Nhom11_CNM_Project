@@ -52,7 +52,7 @@ const SearchScreen = ({ navigation }) => {
     if (searchResults.length > 0) {
       console.log("Selected Contact:", searchResults[0]);
     } else {
-      console.log("No results found.");
+      console.log("No result found.");
       setShowNoResults(true);
     }
   };

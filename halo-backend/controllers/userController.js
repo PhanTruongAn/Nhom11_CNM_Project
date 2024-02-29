@@ -67,9 +67,22 @@ const handlerSearchByPhone = async (req, res) => {
     console.log(error);
   }
 };
+const handlerUpdateUser = async (req, res) => {
+  try {
+    let data = await userService.updateUser(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handlerRegistry,
   handleLogin,
   handlerLoginUser,
   handlerSearchByPhone,
+  handlerUpdateUser,
 };

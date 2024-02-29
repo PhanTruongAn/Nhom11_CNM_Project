@@ -17,6 +17,8 @@ export const checkCookie = async (req, res, next) => {
           phone: user.phone,
           email: user.email,
           avatar: user.avatar,
+          sex: user.sex,
+          dateOfBirth: user.dateOfBirth,
           isActive: true,
           friendRequests: user.friendRequests,
           sendFriendRequests: user.sendFriendRequests,

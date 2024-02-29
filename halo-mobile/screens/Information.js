@@ -1,10 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import React from "react";
 import { Avatar } from "@rneui/themed";
+import { useRoute } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/AntDesign";
 const Information = ({ navigation }) => {
   const user = useSelector((state) => state.userLogin.user);
+  const route = useRoute();
+
   const danhSachTu = user.name.split(" ");
   const ho = danhSachTu[0][0].toUpperCase();
   const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
@@ -12,34 +21,39 @@ const Information = ({ navigation }) => {
   const handleBack = () => {
     navigation.goBack();
   };
+  const image = route.params;
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleBack}>
-        <Icon
-          name="arrowleft"
-          size={25}
-          style={{ paddingLeft: 20, paddingTop: 20 }}
-        />
-      </TouchableOpacity>
-      <View style={styles.header}>
-        <Avatar
-          size={50}
-          rounded
-          title={result}
-          containerStyle={{ backgroundColor: user.avatar.color }}
-        />
-        <Text style={styles.headerName}>{user.name}</Text>
-      </View>
+      <ImageBackground source={image} resizeMode="cover">
+        <TouchableOpacity onPress={handleBack}>
+          <Icon
+            name="arrowleft"
+            size={25}
+            style={{ paddingLeft: 20, paddingTop: 20, color: "white" }}
+          />
+        </TouchableOpacity>
+        <View style={styles.header}>
+          <Avatar
+            size={50}
+            rounded
+            title={result}
+            containerStyle={{ backgroundColor: user.avatar.color }}
+          />
+          <Text style={styles.headerName}>{user.name}</Text>
+        </View>
+      </ImageBackground>
+
       <View style={styles.information}>
         <Text style={styles.information_title}>Thông tin cá nhân</Text>
         <View style={styles.index_container}>
           <View style={styles.custom}>
             <Text style={styles.index}>Giới tính</Text>
-            <Text style={{ marginLeft: "20%", padding: 7 }}>{user.sex}</Text>
+            <Text style={{ marginLeft: "19%", padding: 7 }}>{user.sex}</Text>
           </View>
           <View style={styles.custom}>
             <Text style={styles.index}>Ngày sinh </Text>
-            <Text style={{ marginLeft: "17%", padding: 7 }}>
+            <Text style={{ marginLeft: "16%", padding: 7 }}>
               {user.dateOfBirth}
             </Text>
           </View>
@@ -81,18 +95,19 @@ const styles = StyleSheet.create({
     marginTop: 80,
     flexDirection: "row",
     marginLeft: 20,
+    marginBottom: 10,
   },
   headerName: {
     fontSize: 18,
     fontWeight: 600,
     alignSelf: "center",
     marginLeft: 20,
+    color: "white",
   },
   information: {
     backgroundColor: "white",
     width: "100%",
     height: 280,
-    marginTop: 10,
   },
   information_title: {
     fontSize: 16,
