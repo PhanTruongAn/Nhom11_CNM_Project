@@ -8,19 +8,20 @@ export const fetchUserToken = createAsyncThunk(
   "userLogin/login-user",
   async () => {
     try {
-      let res = await userApi.loginUser();
+      const res = await userApi.loginUser();
 
       if (res && res.EC === 0) {
-        console.log(res.DT);
-        return res.DT;
+        return await res.DT;
       } else {
         throw new Error(res.EM);
       }
     } catch (error) {
-      throw error;
+      console.error("Error fetching user token:", error);
+      throw error; // Re-throw the error to be captured by the rejected state
     }
   }
 );
+
 export const userSlice = createSlice({
   name: "userLogin",
   initialState,

@@ -8,7 +8,7 @@ const signToken = (data) => {
         data: data,
       },
       process.env.JWT_KEY,
-      { expiresIn: 60 * 60 }
+      { expiresIn: "1h" }
     );
   } catch (error) {
     console.log(error);

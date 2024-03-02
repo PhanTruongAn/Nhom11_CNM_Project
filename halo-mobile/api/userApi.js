@@ -9,9 +9,9 @@ const userApi = {
     const url = "/login";
     return axiosClient.post(url, userAccount);
   },
-  loginUser: () => {
+  loginUser: async () => {
     const url = "/login-user";
-    return axiosClient.get(url);
+    return await axiosClient.get(url);
   },
   searchByPhone: (user) => {
     const url = "/searchByPhone";

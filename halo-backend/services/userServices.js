@@ -92,7 +92,7 @@ const updateUser = async (newData) => {
     );
 
     if (!updatedUser) {
-      console.log("User not found");
+      console.log("Không tìm thấy người dùng!");
       return null;
     }
     return {
@@ -100,7 +100,7 @@ const updateUser = async (newData) => {
       EC: 0,
     };
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Lỗi cập nhật người dùng:", error);
     throw error;
   }
 };

@@ -9,15 +9,11 @@ import React from "react";
 import { Avatar } from "@rneui/themed";
 import { useRoute } from "@react-navigation/core";
 import { useSelector } from "react-redux";
+import extendFunctions from "../constants/extendFunctions";
 import Icon from "react-native-vector-icons/AntDesign";
 const Information = ({ navigation }) => {
   const user = useSelector((state) => state.userLogin.user);
   const route = useRoute();
-
-  const danhSachTu = user.name.split(" ");
-  const ho = danhSachTu[0][0].toUpperCase();
-  const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
-  const result = ho + "" + ten;
   const handleBack = () => {
     navigation.goBack();
   };
@@ -37,7 +33,7 @@ const Information = ({ navigation }) => {
           <Avatar
             size={50}
             rounded
-            title={result}
+            title={extendFunctions.getAvatarName(user.name)}
             containerStyle={{ backgroundColor: user.avatar.color }}
           />
           <Text style={styles.headerName}>{user.name}</Text>

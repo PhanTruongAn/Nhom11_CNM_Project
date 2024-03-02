@@ -43,16 +43,20 @@ const handleLogin = async (req, res) => {
   }
 };
 const handlerLoginUser = async (req, res) => {
-  if (req.user) {
-    return res.status(200).json({
-      EM: "User information",
-      EC: 0,
-      DT: req.user,
-    });
-  } else {
-    return res.status(500).json({
-      EM: "Error from sever",
-    });
+  try {
+    if (req.user) {
+      return res.status(200).json({
+        EM: "User information",
+        EC: 0,
+        DT: req.user,
+      });
+    } else {
+      return res.status(500).json({
+        EM: "Error from sever",
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 const handlerSearchByPhone = async (req, res) => {

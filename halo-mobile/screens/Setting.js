@@ -9,6 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Avatar } from "@rneui/themed";
+
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin.user);
@@ -16,23 +17,14 @@ const SettingsScreen = ({ navigation }) => {
   const randomImage = () => {
     const images = [
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199388/Nhom11_CNM/cdi5rhhgp74ple3gmbbc.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199387/Nhom11_CNM/ticao0bydhwr7acbcgjh.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199387/Nhom11_CNM/tz2dlrztoarqjoml0um7.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199387/Nhom11_CNM/iuhpcf7r4azzh6ust2nd.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199386/Nhom11_CNM/fzdkkdsgtqkenoyvoseu.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199386/Nhom11_CNM/iotnltdy8g2uykqp61uu.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199386/Nhom11_CNM/fq6xzfhinkhjstvy3sym.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199385/Nhom11_CNM/etehp2tbr7jaobwwn8fp.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709199384/Nhom11_CNM/sjlt2txlcqiz7byq1sfl.jpg",
-
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709198598/Nhom11_CNM/n4lf86uufmfkc9qa4wud.jpg",
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709200595/Nhom11_CNM/g7hs0ctih2avvds222bw.jpg",
       "https://res.cloudinary.com/dxyxfr1bj/image/upload/v1709200595/Nhom11_CNM/xmrmnnmysltteyyxz8ju.jpg",
@@ -47,7 +39,7 @@ const SettingsScreen = ({ navigation }) => {
     return randomImage;
   };
 
-  //Hàm tách lấy 2 chữ cái đầu họ và tên
+  // Hàm tách lấy 2 chữ cái đầu họ và tên
   const layChuCaiDau = (tenDayDu) => {
     // Tách chuỗi thành mảng các từ
     const fullName = tenDayDu.split(" ");
@@ -73,13 +65,11 @@ const SettingsScreen = ({ navigation }) => {
           title={layChuCaiDau(user.name)}
           containerStyle={{ backgroundColor: user.avatar.color }}
         />
-        {/* <View style={styles.avatarPlaceholder} /> */}
         <Text style={styles.userName}>{user.name}</Text>
       </View>
 
       {/* Settings Sections */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
         <TouchableOpacity
           style={styles.item}
           onPress={() => {
@@ -87,38 +77,55 @@ const SettingsScreen = ({ navigation }) => {
             navigation.navigate("Information", image);
           }}
         >
+          <View style={styles.itemContainer}>
+            <Ionicons
+              name="person"
+              size={24}
+              color="#2B4F6D"
+              style={styles.icon}
+            />
+            <Text style={styles.itemText}>Edit Profile</Text>
+          </View>
           <Ionicons
-            name="person"
+            name="chevron-forward"
             size={24}
             color="#2B4F6D"
             style={styles.icon}
           />
-          <Text style={styles.itemText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account Settings</Text>
         <TouchableOpacity style={styles.item}>
-          <Ionicons name="mail" size={24} color="#2B4F6D" style={styles.icon} />
-          <Text style={styles.itemText}>Change Email</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name="key" size={24} color="#2B4F6D" style={styles.icon} />
-          <Text style={styles.itemText}>Change Password</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Security</Text>
-        <TouchableOpacity style={styles.item}>
+          <View style={styles.itemContainer}>
+            <Ionicons
+              name="key"
+              size={24}
+              color="#2B4F6D"
+              style={styles.icon}
+            />
+            <Text style={styles.itemText}>Change Password</Text>
+          </View>
           <Ionicons
-            name="log-out"
+            name="chevron-forward"
             size={24}
             color="#2B4F6D"
             style={styles.icon}
           />
-          <Text style={styles.itemText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <TouchableOpacity style={styles.item}>
+          <View style={styles.itemContainer}>
+            <Ionicons
+              name="log-out"
+              size={24}
+              color="#2B4F6D"
+              style={styles.icon}
+            />
+            <Text style={styles.itemText}>Logout</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -134,13 +141,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
-  },
-  avatarPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#C0C0C0", // Placeholder background color
-    marginBottom: 10,
   },
   userName: {
     fontSize: 18,
@@ -160,19 +160,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#2B4F6D",
-  },
   item: {
     flexDirection: "row",
+    justifyContent: "space-between", // Đảm bảo biểu tượng ">" nằm ở phía bên phải
     alignItems: "center",
     marginBottom: 10,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "#ECF0F3",
+    borderBottomColor: "red",
+  },
+  itemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
     marginRight: 10,

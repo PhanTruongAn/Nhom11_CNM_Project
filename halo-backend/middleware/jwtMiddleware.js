@@ -10,6 +10,7 @@ export const checkCookie = async (req, res, next) => {
         { phone: decoded.data },
         "_id name phone email avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
       ).exec();
+      console.log(user);
       if (user) {
         req.user = {
           _id: user._id,

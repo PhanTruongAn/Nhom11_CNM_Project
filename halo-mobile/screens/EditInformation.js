@@ -12,6 +12,7 @@ import { Avatar } from "@rneui/themed";
 import Icon from "react-native-vector-icons/AntDesign";
 import { useSelector, useDispatch } from "react-redux";
 import userApi from "../api/userApi";
+import extendFunctions from "../constants/extendFunctions";
 import { updateUser } from "../redux/userSlice";
 const EditInformation = ({ navigation }) => {
   const user = useSelector((state) => state.userLogin.user);
@@ -21,10 +22,7 @@ const EditInformation = ({ navigation }) => {
   const [editingBirthday, setEditingBirthday] = useState(false);
   const [name, setName] = useState(user.name);
   const [birthday, setBirthday] = useState(user.dateOfBirth);
-  const danhSachTu = user.name.split(" ");
-  const ho = danhSachTu[0][0].toUpperCase();
-  const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
-  const result = ho + "" + ten;
+
   const handleChangeName = (event) => {
     setName(event.target.value);
   };
@@ -59,7 +57,7 @@ const EditInformation = ({ navigation }) => {
     };
     const req = await userApi.updateUser(newData);
     dispatch(updateUser(req.DT));
-    Alert.alert("Đăng nhập thành công!");
+    Alert.alert("Cập nhật thành công!");
   };
   return (
     <View style={styles.container}>
@@ -80,7 +78,7 @@ const EditInformation = ({ navigation }) => {
             <Avatar
               size={100}
               rounded
-              title={result}
+              title={extendFunctions.getAvatarName(user.name)}
               containerStyle={{ backgroundColor: user.avatar.color }}
             />
           </View>
