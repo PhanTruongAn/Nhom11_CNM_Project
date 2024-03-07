@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from "react-native";
 import React from "react";
 import { Avatar } from "@rneui/themed";
@@ -21,25 +22,36 @@ const Information = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={image} resizeMode="cover">
-        <TouchableOpacity onPress={handleBack}>
-          <Icon
-            name="arrowleft"
-            size={25}
-            style={{ paddingLeft: 20, paddingTop: 20, color: "white" }}
-          />
-        </TouchableOpacity>
-        <View style={styles.header}>
-          <Avatar
-            size={50}
-            rounded
-            title={extendFunctions.getAvatarName(user.name)}
-            containerStyle={{ backgroundColor: user.avatar.color }}
-          />
-          <Text style={styles.headerName}>{user.name}</Text>
-        </View>
-      </ImageBackground>
+      <View style={styles.headerTop}>
+        <Image
+          source={{
+            uri: image,
+          }}
+          style={{
+            flex: 1,
+            width: null,
+            height: null,
+            resizeMode: "cover",
+          }}
+        />
+      </View>
 
+      <TouchableOpacity onPress={handleBack}>
+        <Icon
+          name="arrowleft"
+          size={25}
+          style={{ paddingLeft: 20, marginTop: -170, color: "white" }}
+        />
+      </TouchableOpacity>
+      <View style={styles.header}>
+        <Avatar
+          size={50}
+          rounded
+          title={extendFunctions.getAvatarName(user.name)}
+          containerStyle={{ backgroundColor: user.avatar.color }}
+        />
+        <Text style={styles.headerName}>{user.name}</Text>
+      </View>
       <View style={styles.information}>
         <Text style={styles.information_title}>Thông tin cá nhân</Text>
         <View style={styles.index_container}>
@@ -85,10 +97,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
   },
+  headerTop: {
+    width: "100%",
+    height: 190,
+
+    overflow: "hidden",
+  },
   header: {
     width: "80%",
     height: 50,
-    marginTop: 80,
+    marginTop: -80,
     flexDirection: "row",
     marginLeft: 20,
     marginBottom: 10,

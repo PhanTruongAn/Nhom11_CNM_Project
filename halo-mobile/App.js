@@ -11,6 +11,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import SearchScreen from "./screens/SearchScreen";
+import ChangePassScreen from "./screens/ChangePassScreen";
+import OtpScreen from "./screens/OtpScreen";
+import MeScreen from "./screens/MeScreen";
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -59,6 +62,27 @@ const App = () => {
               }}
               name="EditInformation"
               component={EditInformation}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="ChangePassScreen"
+              component={ChangePassScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="OtpScreen"
+              component={OtpScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="MeScreen"
+              component={MeScreen}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

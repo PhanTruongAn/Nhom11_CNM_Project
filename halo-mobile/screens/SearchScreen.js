@@ -10,18 +10,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
 import userApi from "../api/userApi";
+import extendFunctions from "../constants/extendFunctions";
 const ContactDetails = ({ user }) => {
-  const danhSachTu = user.name.split(" ");
-  const ho = danhSachTu[0][0].toUpperCase();
-  const ten = danhSachTu[danhSachTu.length - 1][0].toUpperCase();
-  const result = ho + "" + ten;
   return (
     <View style={styles.contactDetailsContainer}>
       <View style={styles.avatarContainer}>
         <Avatar
           size={50}
           rounded
-          title={result}
+          title={extendFunctions.getAvatarName(user.name)}
           containerStyle={{ backgroundColor: user.avatar.color }}
         />
       </View>
@@ -107,7 +104,13 @@ const SearchScreen = ({ navigation }) => {
         </View>
       </View>
       {showResults ? (
-        <ContactDetails user={searchResults} />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("MeScreen", searchResults);
+          }}
+        >
+          <ContactDetails user={searchResults} />
+        </TouchableOpacity>
       ) : (
         <Text>No results found.</Text>
       )}

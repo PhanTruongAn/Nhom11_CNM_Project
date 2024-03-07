@@ -214,8 +214,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 600,
+    fontSize: 20,
+    fontWeight: "bold",
     color: "white",
   },
   contentContainer: {
