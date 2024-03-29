@@ -24,7 +24,6 @@ const MeHeader = ({ navigation }) => {
             width: null,
             height: null,
             resizeMode: "cover",
-            position: "relative",
           }}
         />
       </View>

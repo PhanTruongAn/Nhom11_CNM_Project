@@ -60,7 +60,7 @@ const SettingsScreen = ({ navigation }) => {
       <View style={styles.section}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("OtpScreen");
+            navigation.navigate("ChangePassScreen");
           }}
           style={styles.item}
         >

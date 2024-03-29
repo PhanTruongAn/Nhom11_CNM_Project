@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
@@ -45,17 +44,19 @@ const OtpScreen = ({ navigation }) => {
   const handleSubmitOtp = () => {
     // Xử lý xác nhận mã OTP
     Alert.alert("Thông báo", "Mã OTP đã được xác nhận!");
-    navigation.navigate("ChangePassScreen");
-  };
-  const handlerGoBack = () => {
-    navigation.goBack();
+    // navigation.navigate("ChangePassScreen");
   };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={handlerGoBack} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Login");
+          }}
+          style={styles.backButton}
+        >
           <Icon name="arrowleft" size={24} color="white" />
-        </Pressable>
+        </TouchableOpacity>
         <Text style={styles.title}>Nhập mã OTP</Text>
       </View>
       <Text style={styles.message}>
