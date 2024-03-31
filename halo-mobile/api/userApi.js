@@ -1,6 +1,10 @@
 import axiosClient from "./axiosClient";
 import axios from "axios";
 const userApi = {
+  checkValidate: (userAccount) => {
+    const url = "/checkValidate";
+    return axiosClient.post(url, userAccount);
+  },
   register: (userAccount) => {
     const url = "/registry";
     return axiosClient.post(url, userAccount);

@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import userApi from "../api/userApi";
-
 const Registration = ({ navigation }) => {
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setConfirmShowPass] = useState(false);
@@ -41,39 +40,64 @@ const Registration = ({ navigation }) => {
     const randomColor = colors[randomIndex];
     return randomColor;
   };
+  // const handleRegister = async () => {
+  //   const user = {
+  //     name: name,
+  //     phone: phone,
+  //     email: email,
+  //     password: password,
+  //     otp: "",
+  //     avatar: {
+  //       uri: "",
+  //       color: getRandomColor(),
+  //     },
+  //   };
+
+  //   if (password === confirmPass) {
+  //     let req = await userApi.register(user);
+  //     if (req.EM) {
+  //       alert(req.EM);
+  //       Alert.alert(req.EM);
+  //     } else {
+  //       alert("Đăng ký thành công!");
+  //       Alert.alert("Đăng ký thành công!");
+  //       navigation.navigate("Login");
+  //       setName("");
+  //       setEmail("");
+  //       setPhone("");
+  //       setPassword("");
+  //       setConfirmPass("");
+  //     }
+  //   } else {
+  //     alert("Mật khẩu xác nhận không đúng!");
+  //     Alert.alert("Mật khẩu xác nhận không đúng!");
+  //   }
+  // };
   const handleRegister = async () => {
     const user = {
       name: name,
       phone: phone,
       email: email,
       password: password,
+      otp: "",
       avatar: {
         uri: "",
         color: getRandomColor(),
       },
     };
-
     if (password === confirmPass) {
-      let req = await userApi.register(user);
+      let req = await userApi.checkValidate(user);
       if (req.EM) {
         alert(req.EM);
         Alert.alert(req.EM);
       } else {
-        alert("Đăng ký thành công!");
-        Alert.alert("Đăng ký thành công!");
-        navigation.navigate("Login");
-        setName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setConfirmPass("");
+        navigation.navigate("OtpScreen", { user });
       }
     } else {
       alert("Mật khẩu xác nhận không đúng!");
       Alert.alert("Mật khẩu xác nhận không đúng!");
     }
   };
-
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -146,7 +170,7 @@ const Registration = ({ navigation }) => {
         </View>
       </View>
       <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
-        <Text style={styles.registerButtonText}>Đăng ký</Text>
+        <Text style={styles.registerButtonText}>Xác thực</Text>
       </TouchableOpacity>
       <View style={styles.loginContainer}>
         <Text>Bạn đã có tài khoản ?</Text>

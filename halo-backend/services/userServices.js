@@ -8,8 +8,8 @@ const hashPassword = (password) => {
   const hash = bcrypt.hashSync(password, salt);
   return hash;
 };
-
-const userRegistry = async (user) => {
+// User Validate
+const checkValidate = async (user) => {
   const nameCheck = userValidate.checkUsername(user.name);
   if (nameCheck.EC !== 0) {
     return nameCheck;
@@ -26,7 +26,12 @@ const userRegistry = async (user) => {
   if (passCheck.EC !== 0) {
     return passCheck;
   }
-
+  return {
+    EC: 0,
+  };
+};
+// User Registry
+const userRegistry = async (user) => {
   let password = hashPassword(user.password);
   const newUser = new User({ ...user, password });
   await newUser.save();
@@ -105,6 +110,7 @@ const updateUser = async (newData) => {
   }
 };
 module.exports = {
+  checkValidate,
   userRegistry,
   userLogin,
   searchByPhone,

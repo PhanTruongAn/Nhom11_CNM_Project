@@ -9,6 +9,7 @@ const router = express.Router();
  */
 
 const initAppRoutes = (app) => {
+  router.post("/checkValidate", userController.handlerCheckValidate);
   router.post("/registry", userController.handlerRegistry);
   router.post("/login", userController.handleLogin);
   router.get("/login-user", checkCookie, userController.handlerLoginUser);

@@ -105,8 +105,7 @@ const Login = ({ navigation }) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("OtpScreen");
-              // Xử lý quên mật khẩu
+              navigation.navigate("OTPOption");
             }}
           >
             <Text style={styles.forgotPassword}>Quên mật khẩu ?</Text>

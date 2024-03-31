@@ -14,6 +14,7 @@ import SearchScreen from "./screens/SearchScreen";
 import ChangePassScreen from "./screens/ChangePassScreen";
 import OtpScreen from "./screens/OtpScreen";
 import MeScreen from "./screens/MeScreen";
+import OTPOption from "./screens/OTPOption";
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -72,7 +73,14 @@ const App = () => {
             ></Stack.Screen>
             <Stack.Screen
               options={{
-                headerShown: false,
+                title: "Nhập mã OTP",
+                headerStyle: {
+                  backgroundColor: "#007bff",
+                },
+                headerTintColor: "#fff",
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
               }}
               name="OtpScreen"
               component={OtpScreen}
@@ -83,6 +91,20 @@ const App = () => {
               }}
               name="MeScreen"
               component={MeScreen}
+            ></Stack.Screen>
+            <Stack.Screen
+              options={{
+                title: "Chọn loại OTP",
+                headerStyle: {
+                  backgroundColor: "#007bff",
+                },
+                headerTintColor: "#fff",
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              }}
+              name="OTPOption"
+              component={OTPOption}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

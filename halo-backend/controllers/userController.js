@@ -1,4 +1,23 @@
 import userService from "../services/userServices";
+// Handler Check Validate
+const handlerCheckValidate = async (req, res) => {
+  try {
+    let data = await userService.checkValidate(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Lỗi từ server",
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+
 // Handler Registry
 const handlerRegistry = async (req, res) => {
   try {
@@ -84,6 +103,7 @@ const handlerUpdateUser = async (req, res) => {
   }
 };
 module.exports = {
+  handlerCheckValidate,
   handlerRegistry,
   handleLogin,
   handlerLoginUser,

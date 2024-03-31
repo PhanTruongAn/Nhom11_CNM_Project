@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    otp: {
+      type: String,
+    },
     avatar: {
       type: {
         uri: {
