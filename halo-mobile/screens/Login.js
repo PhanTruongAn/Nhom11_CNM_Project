@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import userApi from "../api/userApi";
+import socket from "../config/configSocket";
 import { useDispatch } from "react-redux";
 import { fetchUserToken } from "../redux/userSlice";
 const Login = ({ navigation }) => {
@@ -31,11 +32,14 @@ const Login = ({ navigation }) => {
         Alert.alert(req.EM);
       } else {
         await dispatch(fetchUserToken());
+
         alert("Đăng nhập thành công!");
         Alert.alert("Đăng nhập thành công!");
         navigation.navigate("BottomTabNavigator");
         setPhone("");
         setPassword("");
+        // socket.emit("userLogin", phone);
+        // console.log("Check Socket: ", socket);
       }
     } else {
       alert("Hãy nhập đầy đủ thông tin!");

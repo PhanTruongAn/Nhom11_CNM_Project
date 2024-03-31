@@ -40,39 +40,6 @@ const Registration = ({ navigation }) => {
     const randomColor = colors[randomIndex];
     return randomColor;
   };
-  // const handleRegister = async () => {
-  //   const user = {
-  //     name: name,
-  //     phone: phone,
-  //     email: email,
-  //     password: password,
-  //     otp: "",
-  //     avatar: {
-  //       uri: "",
-  //       color: getRandomColor(),
-  //     },
-  //   };
-
-  //   if (password === confirmPass) {
-  //     let req = await userApi.register(user);
-  //     if (req.EM) {
-  //       alert(req.EM);
-  //       Alert.alert(req.EM);
-  //     } else {
-  //       alert("Đăng ký thành công!");
-  //       Alert.alert("Đăng ký thành công!");
-  //       navigation.navigate("Login");
-  //       setName("");
-  //       setEmail("");
-  //       setPhone("");
-  //       setPassword("");
-  //       setConfirmPass("");
-  //     }
-  //   } else {
-  //     alert("Mật khẩu xác nhận không đúng!");
-  //     Alert.alert("Mật khẩu xác nhận không đúng!");
-  //   }
-  // };
   const handleRegister = async () => {
     const user = {
       name: name,
