@@ -4,23 +4,23 @@ const initialState = {
   isAuthenticated: false,
   user: {},
 };
-export const fetchUserToken = createAsyncThunk(
-  "userLogin/login-user",
-  async () => {
-    try {
-      const res = await userApi.loginUser();
+// export const fetchUserToken = createAsyncThunk(
+//   "userLogin/login-user",
+//   async () => {
+//     try {
+//       const res = await userApi.login();
 
-      if (res && res.EC === 0) {
-        return await res.DT;
-      } else {
-        throw new Error(res.EM);
-      }
-    } catch (error) {
-      console.error("Error fetching user token:", error);
-      throw error; // Re-throw the error to be captured by the rejected state
-    }
-  }
-);
+//       if (res && res.EC === 0) {
+//         return await res.DT;
+//       } else {
+//         throw new Error(res.EM);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching user token:", error);
+//       throw error; // Re-throw the error to be captured by the rejected state
+//     }
+//   }
+// );
 
 export const userSlice = createSlice({
   name: "userLogin",
@@ -29,18 +29,21 @@ export const userSlice = createSlice({
     updateUser: (state, action) => {
       state.user = action.payload;
     },
+    loginUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchUserToken.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
-        state.user = action.payload;
-      })
-      .addCase(fetchUserToken.rejected, (state, action) => {
-        state.isAuthenticated = false;
-        state.user = {};
-      });
-  },
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(fetchUserToken.fulfilled, (state, action) => {
+  //       state.isAuthenticated = true;
+  //       state.user = action.payload;
+  //     })
+  //     .addCase(fetchUserToken.rejected, (state, action) => {
+  //       state.isAuthenticated = false;
+  //       state.user = {};
+  //     });
+  // },
 });
-export const { updateUser } = userSlice.actions;
+export const { updateUser, loginUser } = userSlice.actions;
 export default userSlice.reducer;

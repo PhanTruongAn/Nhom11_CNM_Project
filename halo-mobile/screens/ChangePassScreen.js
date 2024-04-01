@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-
+import { useDispatch, useSelector } from "react-redux";
+import userApi from "../api/userApi";
 const ChangePassScreen = ({ navigation }) => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -16,20 +17,26 @@ const ChangePassScreen = ({ navigation }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-
-  const handleSavePassword = () => {
-    // Kiểm tra mật khẩu mới và mật khẩu nhập lại có khớp nhau không
+  const user = useSelector((state) => state.userLogin.user);
+  const handleSavePassword = async () => {
     if (newPassword !== confirmNewPassword) {
       alert("Mật khẩu mới không khớp. Vui lòng nhập lại.");
       return;
     }
-    // Thực hiện xử lý lưu mật khẩu
-    console.log("Old Password:", oldPassword);
-    console.log("New Password:", newPassword);
-    // Đặt lại trạng thái của các trường sau khi lưu mật khẩu thành công
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmNewPassword("");
+    const newUser = {
+      _id: user._id,
+      newPassword: newPassword,
+    };
+    const req = await userApi.changePassword(newUser);
+    if (req) {
+      alert("Đổi mật khẩu thành công");
+      navigation.navigate("Login");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } else {
+      alert("Đổi mật khẩu thất bại");
+    }
   };
 
   return (

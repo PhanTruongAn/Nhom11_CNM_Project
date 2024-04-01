@@ -13,7 +13,7 @@ import Icon from "react-native-vector-icons/Entypo";
 import userApi from "../api/userApi";
 import socket from "../config/configSocket";
 import { useDispatch } from "react-redux";
-import { fetchUserToken } from "../redux/userSlice";
+import { fetchUserToken, loginUser } from "../redux/userSlice";
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
   const [showPass, setShowPass] = useState(false);
@@ -31,8 +31,7 @@ const Login = ({ navigation }) => {
         alert(req.EM);
         Alert.alert(req.EM);
       } else {
-        await dispatch(fetchUserToken());
-
+        dispatch(loginUser(req.DT));
         alert("Đăng nhập thành công!");
         Alert.alert("Đăng nhập thành công!");
         navigation.navigate("BottomTabNavigator");

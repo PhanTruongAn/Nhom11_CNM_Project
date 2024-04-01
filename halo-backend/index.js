@@ -33,6 +33,7 @@ app.listen(PORT, () => {
 
 connectDB();
 initAppRoutes(app);
+const ip = "172.16.34.202";
 
 // Config SocketIO
 const server = require("http").Server(app);

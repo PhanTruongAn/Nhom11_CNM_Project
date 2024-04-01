@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import extendFunctions from "../constants/extendFunctions";
 import { Avatar } from "@rneui/themed";
@@ -14,12 +16,20 @@ import { Avatar } from "@rneui/themed";
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin.user);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
-  // Hàm tách lấy 2 chữ cái đầu họ và tên
+  const logOut = () => {
+    setModalVisible(false);
+    navigation.navigate("Login");
+  };
 
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
+
       <View style={styles.header}>
         <Avatar
           size={80}
@@ -83,7 +93,7 @@ const SettingsScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.section}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity onPress={toggleModal} style={styles.item}>
           <View style={styles.itemContainer}>
             <Ionicons
               name="log-out"
@@ -95,6 +105,81 @@ const SettingsScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
+      <Modal isVisible={isModalVisible}>
+        <View
+          style={{
+            borderRadius: 10,
+            width: 350,
+            height: 120,
+            alignSelf: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "white",
+          }}
+        >
+          <Text
+            style={{
+              marginTop: 40,
+              fontSize: 18,
+              fontWeight: 600,
+              alignSelf: "center",
+              justifyContent: "center",
+            }}
+          >
+            Bạn có muốn thoát tài khoản này không?
+          </Text>
+          <View
+            style={{
+              width: 250,
+              height: 70,
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <TouchableOpacity
+              onPress={logOut}
+              style={{
+                width: 100,
+                height: 30,
+                backgroundColor: "#1faeeb",
+                borderRadius: 7,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: "white",
+                  alignSelf: "center",
+                }}
+              >
+                Đồng ý
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={toggleModal}
+              style={{
+                width: 100,
+                height: 30,
+                backgroundColor: "#1faeeb",
+                borderRadius: 7,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: "white",
+                  alignSelf: "center",
+                }}
+              >
+                Hủy bỏ
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

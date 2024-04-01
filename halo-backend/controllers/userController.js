@@ -41,12 +41,6 @@ const handlerRegistry = async (req, res) => {
 const handleLogin = async (req, res) => {
   try {
     let data = await userService.userLogin(req.body);
-    if (data && data.DT) {
-      await res.cookie("Jwt", data.DT, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 1000,
-      });
-    }
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
@@ -61,23 +55,23 @@ const handleLogin = async (req, res) => {
     });
   }
 };
-const handlerLoginUser = async (req, res) => {
-  try {
-    if (req.user) {
-      return res.status(200).json({
-        EM: "User information",
-        EC: 0,
-        DT: req.user,
-      });
-    } else {
-      return res.status(500).json({
-        EM: "Error from sever",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+// const handlerLoginUser = async (req, res) => {
+//   try {
+//     if (req.user) {
+//       return res.status(200).json({
+//         EM: "User information",
+//         EC: 0,
+//         DT: req.user,
+//       });
+//     } else {
+//       return res.status(500).json({
+//         EM: "Error from sever",
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 const handlerSearchByPhone = async (req, res) => {
   try {
     let data = await userService.searchByPhone(req.body);
@@ -102,11 +96,24 @@ const handlerUpdateUser = async (req, res) => {
     console.log(error);
   }
 };
+const handlerChangePassword = async (req, res) => {
+  try {
+    let data = await userService.changePassword(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handlerCheckValidate,
   handlerRegistry,
   handleLogin,
-  handlerLoginUser,
+  // handlerLoginUser,
   handlerSearchByPhone,
   handlerUpdateUser,
+  handlerChangePassword,
 };

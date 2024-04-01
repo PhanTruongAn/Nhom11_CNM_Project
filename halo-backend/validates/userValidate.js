@@ -34,10 +34,10 @@ const userValidate = {
         EM: "Họ và tên phải từ 5-20 kí tự!",
       };
     }
-    const regex = /^[a-zA-Z0-9_ ]+$/;
+    const regex = /^[a-zA-ZÀ-ỹ ]+$/;
     if (!regex.test(username)) {
       return {
-        EM: "Username chỉ được chứa chữ cái, số và dấu gạch dưới!",
+        EM: "Họ và tên chỉ được chứa chữ cái, số và dấu gạch dưới!",
       };
     }
     return {
@@ -46,7 +46,7 @@ const userValidate = {
   },
   checkEmail: (email) => {
     // Email dạng example@example.com
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[^\s@]+@[^\s@]+\.(com[^\s@]*)$/;
     if (!regex.test(email)) {
       return {
         EM: "Email không hợp lệ!",

@@ -17,6 +17,7 @@ const OtpScreen = ({ navigation }) => {
   const data = route.params.user;
   const [confirmInfo, setConfirmInfo] = useState("");
   const [otp, setOtp] = useState("");
+  const [captchaVisible, setCaptchaVisible] = useState(true);
   const handleOtpChange = (index, value) => {};
   let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
@@ -24,6 +25,7 @@ const OtpScreen = ({ navigation }) => {
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {});
       const confirmOtp = await signInWithPhoneNumber(auth, phone, recaptcha);
       setConfirmInfo(confirmOtp);
+      setCaptchaVisible(false); // Ẩn đi phần tử Captcha sau khi gửi OTP thành công
       console.log("Check Otp:", confirmOtp);
     } catch (error) {
       console.log(error);
@@ -68,7 +70,8 @@ const OtpScreen = ({ navigation }) => {
         >
           <Text style={styles.submitButtonText}>Gửi OTP</Text>
         </TouchableOpacity>
-        <div id="recaptcha" style={{ marginTop: 10 }}></div>
+        {captchaVisible && <div id="recaptcha" style={{ marginTop: 10 }}></div>}
+
         <View style={styles.otpContainer}>
           <TextInput
             style={styles.otpInput}
@@ -83,7 +86,13 @@ const OtpScreen = ({ navigation }) => {
         {/* <TouchableOpacity style={styles.resendButton} onPress={handleResendOtp}>
           <Text style={styles.resendButtonText}>Gửi lại mã OTP</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmitOtp}>
+        <TouchableOpacity
+          style={[
+            styles.submitButton,
+            otp.length == 6 && { backgroundColor: "#1faeeb" }, // Màu nền khác khi otp khác rỗng
+          ]}
+          onPress={handleSubmitOtp}
+        >
           <Text style={styles.submitButtonText}>Xác nhận</Text>
         </TouchableOpacity>
       </View>

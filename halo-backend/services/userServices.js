@@ -41,19 +41,22 @@ const userRegistry = async (user) => {
 };
 // User Login
 const userLogin = async (user) => {
-  const account = await User.findOne({ phone: user.phone }).exec();
+  const account = await User.findOne(
+    { phone: user.phone },
+    "_id name phone email password avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
+  ).exec();
   if (!account) {
     return {
       EM: "Số điện thoại không tồn tại!",
     };
   }
-
   const comparePassword = bcrypt.compareSync(user.password, account.password);
   if (comparePassword) {
-    let token = await jwtService.signToken(account.phone);
+    // let token = await jwtService.signToken(account.phone);
+    const { password, ...userData } = account.toObject(); // Loại bỏ trường password từ đối tượng tài khoản
     return {
       EC: 0,
-      DT: token,
+      DT: userData,
     };
   } else {
     return {
@@ -109,10 +112,37 @@ const updateUser = async (newData) => {
     throw error;
   }
 };
+// Change Password
+const changePassword = async (user) => {
+  try {
+    let newPassword = hashPassword(user.newPassword);
+    console.log("Check new password: -----", newPassword);
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $set: {
+          password: newPassword,
+        },
+      },
+      {
+        new: true,
+        select:
+          "_id name phone email avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends",
+      }
+    );
+    return {
+      DT: updatedUser,
+      EC: 0,
+    };
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+};
 module.exports = {
   checkValidate,
   userRegistry,
   userLogin,
   searchByPhone,
   updateUser,
+  changePassword,
 };
