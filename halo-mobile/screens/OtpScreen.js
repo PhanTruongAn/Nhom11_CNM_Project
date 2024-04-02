@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRoute } from "@react-navigation/core";
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import { firebaseConfig } from "../firebase/setup";
+import firebase from "firebase/compat/app";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { auth } from "../firebase/setup";
 import {
   StyleSheet,
   Text,
@@ -15,33 +17,37 @@ import Icon from "react-native-vector-icons/AntDesign";
 const OtpScreen = ({ navigation }) => {
   const route = useRoute();
   const data = route.params.user;
-  const [confirmInfo, setConfirmInfo] = useState("");
   const [otp, setOtp] = useState("");
+  const [verificationId, setVerificationId] = useState(null);
   const [captchaVisible, setCaptchaVisible] = useState(true);
+  const recaptchaVerifier = useRef(null);
   const handleOtpChange = (index, value) => {};
   let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
-    try {
-      const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {});
-      const confirmOtp = await signInWithPhoneNumber(auth, phone, recaptcha);
-      setConfirmInfo(confirmOtp);
-      setCaptchaVisible(false); // Ẩn đi phần tử Captcha sau khi gửi OTP thành công
-      console.log("Check Otp:", confirmOtp);
-    } catch (error) {
-      console.log(error);
-    }
+    const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    phoneProvider
+      .verifyPhoneNumber(phone, recaptchaVerifier.current)
+      .then(setVerificationId);
+    console.log("Check provider:", phoneProvider);
   };
   const handleSubmitOtp = async () => {
-    const checkOtp = await confirmInfo.confirm(otp);
-    if (checkOtp) {
-      let req = await userApi.register(data);
-      alert("Đăng ký thành công!");
-      Alert.alert("Đăng ký thành công!");
-      navigation.navigate("Login");
-      console.log(checkOtp);
-    } else {
-      Alert("Mã OTP không hợp lệ");
-    }
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      verificationId,
+      otp
+    );
+    firebase
+      .auth()
+      .signInWithCredential(credential)
+      .then(() => {
+        setOtp("");
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+    let req = await userApi.register(data);
+    alert("Đăng ký thành công!");
+    Alert.alert("Đăng ký thành công!");
+    navigation.navigate("Login");
   };
   return (
     <View style={styles.container}>
@@ -70,10 +76,19 @@ const OtpScreen = ({ navigation }) => {
         >
           <Text style={styles.submitButtonText}>Gửi OTP</Text>
         </TouchableOpacity>
-        {captchaVisible && <div id="recaptcha" style={{ marginTop: 10 }}></div>}
+
+        <View style={{ marginTop: 10 }}>
+          {captchaVisible && (
+            <FirebaseRecaptchaVerifierModal
+              ref={recaptchaVerifier}
+              firebaseConfig={firebaseConfig}
+            />
+          )}
+        </View>
 
         <View style={styles.otpContainer}>
           <TextInput
+            onFocus={() => setCaptchaVisible(false)}
             style={styles.otpInput}
             placeholder="Nhập mã OTP"
             placeholderTextColor={"gray"}
@@ -83,9 +98,6 @@ const OtpScreen = ({ navigation }) => {
         <View style={styles.countdownContainer}>
           <Text style={styles.countdownText}></Text>
         </View>
-        {/* <TouchableOpacity style={styles.resendButton} onPress={handleResendOtp}>
-          <Text style={styles.resendButtonText}>Gửi lại mã OTP</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
           style={[
             styles.submitButton,

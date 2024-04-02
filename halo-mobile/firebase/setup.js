@@ -1,11 +1,7 @@
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  getReactNativePersistence,
-  initializeAuth,
-} from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-const firebaseConfig = {
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+export const firebaseConfig = {
   apiKey: "AIzaSyB0fpP09QnXAp37BLxqo5UTUwjGFh_0yOo",
   authDomain: "halo-project-4150f.firebaseapp.com",
   projectId: "halo-project-4150f",
@@ -13,9 +9,6 @@ const firebaseConfig = {
   messagingSenderId: "987909110009",
   appId: "1:987909110009:web:d47b0d384e2500cb854a28",
 };
-
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-// export const auth = initializeAuth(app, {
-//   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-// });
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
