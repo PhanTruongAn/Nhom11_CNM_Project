@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import userApi from "../api/userApi";
 import Icon from "react-native-vector-icons/AntDesign";
+
 const OtpScreen = ({ navigation }) => {
   const route = useRoute();
   const data = route.params.user;
@@ -21,7 +22,8 @@ const OtpScreen = ({ navigation }) => {
   const [verificationId, setVerificationId] = useState(null);
   const [captchaVisible, setCaptchaVisible] = useState(true);
   const recaptchaVerifier = useRef(null);
-  const handleOtpChange = (index, value) => {};
+  /////////////////////
+
   let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
@@ -77,13 +79,11 @@ const OtpScreen = ({ navigation }) => {
           <Text style={styles.submitButtonText}>Gửi OTP</Text>
         </TouchableOpacity>
 
-        <View style={{ marginTop: 10 }}>
-          {captchaVisible && (
-            <FirebaseRecaptchaVerifierModal
-              ref={recaptchaVerifier}
-              firebaseConfig={firebaseConfig}
-            />
-          )}
+        <View style={{ marginTop: 5 }}>
+          <FirebaseRecaptchaVerifierModal
+            ref={recaptchaVerifier}
+            firebaseConfig={firebaseConfig}
+          />
         </View>
 
         <View style={styles.otpContainer}>

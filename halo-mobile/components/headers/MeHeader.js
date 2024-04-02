@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import * as React from "react";
 import { COLORS, SPACING } from "../../theme/theme";
 // import { Icon } from 'react-native-vector-icons/Icon'
 // import EditProfile from "../../screens/EditProfile";
