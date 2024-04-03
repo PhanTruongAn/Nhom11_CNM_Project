@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRoute } from "@react-navigation/core";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import { firebaseConfig } from "../firebase/setup";
-import firebase from "firebase/compat/app";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+// import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+// import { firebaseConfig } from "../firebase/setup";
+// import firebase from "firebase/compat/app";
+// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import {
   StyleSheet,
   Text,
@@ -26,26 +26,26 @@ const OtpScreen = ({ navigation }) => {
 
   let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    phoneProvider
-      .verifyPhoneNumber(phone, recaptchaVerifier.current)
-      .then(setVerificationId);
-    console.log("Check provider:", phoneProvider);
+    // const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    // phoneProvider
+    //   .verifyPhoneNumber(phone, recaptchaVerifier.current)
+    //   .then(setVerificationId);
+    // console.log("Check provider:", phoneProvider);
   };
   const handleSubmitOtp = async () => {
-    const credential = firebase.auth.PhoneAuthProvider.credential(
-      verificationId,
-      otp
-    );
-    firebase
-      .auth()
-      .signInWithCredential(credential)
-      .then(() => {
-        setOtp("");
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
+    // const credential = firebase.auth.PhoneAuthProvider.credential(
+    //   verificationId,
+    //   otp
+    // );
+    // firebase
+    //   .auth()
+    //   .signInWithCredential(credential)
+    //   .then(() => {
+    //     setOtp("");
+    //   })
+    //   .catch((error) => {
+    //     console.log("Error:", error);
+    //   });
     let req = await userApi.register(data);
     alert("Đăng ký thành công!");
     Alert.alert("Đăng ký thành công!");
@@ -54,7 +54,9 @@ const OtpScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.message}>Gửi mã OTP đến số điện thoại</Text>
+        <Text style={styles.message}>
+          Mã OTP đã được gửi đến email: {data.email}
+        </Text>
         <Text
           style={{
             marginTop: 5,
@@ -79,12 +81,12 @@ const OtpScreen = ({ navigation }) => {
           <Text style={styles.submitButtonText}>Gửi OTP</Text>
         </TouchableOpacity>
 
-        <View style={{ marginTop: 5 }}>
+        {/* <View style={{ marginTop: 5 }}>
           <FirebaseRecaptchaVerifierModal
             ref={recaptchaVerifier}
             firebaseConfig={firebaseConfig}
           />
-        </View>
+        </View> */}
 
         <View style={styles.otpContainer}>
           <TextInput

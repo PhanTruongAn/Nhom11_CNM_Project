@@ -14,7 +14,6 @@ import { store } from "./redux/store";
 import SearchScreen from "./screens/SearchScreen";
 import ChangePassScreen from "./screens/ChangePassScreen";
 import OtpScreen from "./screens/OtpScreen";
-import MeScreen from "./screens/MeScreen";
 import OTPOption from "./screens/OTPOption";
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -85,13 +84,7 @@ const App = () => {
             name="OtpScreen"
             component={OtpScreen}
           ></Stack.Screen>
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="MeScreen"
-            component={MeScreen}
-          ></Stack.Screen>
+
           <Stack.Screen
             options={{
               title: "Chọn loại OTP",

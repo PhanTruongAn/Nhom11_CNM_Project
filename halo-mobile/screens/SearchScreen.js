@@ -106,7 +106,7 @@ const SearchScreen = ({ navigation }) => {
       {showResults ? (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("MeScreen", searchResults);
+            // navigation.navigate("MeScreen", searchResults);
           }}
         >
           <ContactDetails user={searchResults} />
