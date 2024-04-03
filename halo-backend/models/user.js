@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     otp: {
       type: String,
     },
+    otpTime: Date,
     avatar: {
       type: {
         uri: {

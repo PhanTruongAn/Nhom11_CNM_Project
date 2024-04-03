@@ -28,6 +28,11 @@ const Login = ({ navigation }) => {
       let req = await userApi.login(user);
 
       if (req.EM) {
+        if (req.EC == 1) {
+          alert(req.EM);
+          Alert.alert(req.EM);
+          navigation.navigate("OtpScreen", { user: req.DT });
+        }
         alert(req.EM);
         Alert.alert(req.EM);
       } else {

@@ -16,6 +16,8 @@ const initAppRoutes = (app) => {
   router.post("/searchByPhone", userController.handlerSearchByPhone);
   router.post("/update-user", userController.handlerUpdateUser);
   router.post("/change-password", userController.handlerChangePassword);
+  router.post("/confirm-account", userController.handleConfirmAccount);
+  router.post("/new-otp", userController.handlerNewOtp);
   return app.use("/", router);
 };
 export default initAppRoutes;

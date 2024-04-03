@@ -46,7 +46,6 @@ const Registration = ({ navigation }) => {
       phone: phone,
       email: email,
       password: password,
-      otp: "",
       avatar: {
         uri: "",
         color: getRandomColor(),
@@ -58,7 +57,9 @@ const Registration = ({ navigation }) => {
         alert(req.EM);
         Alert.alert(req.EM);
       } else {
-        navigation.navigate("OtpScreen", { user });
+        let userRegis = await userApi.register(user);
+        console.log("Check UserRegis:", userRegis);
+        navigation.navigate("OtpScreen", { user: userRegis.DT });
       }
     } else {
       alert("Mật khẩu xác nhận không đúng!");
@@ -137,7 +138,7 @@ const Registration = ({ navigation }) => {
         </View>
       </View>
       <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
-        <Text style={styles.registerButtonText}>Xác thực</Text>
+        <Text style={styles.registerButtonText}>Đăng ký</Text>
       </TouchableOpacity>
       <View style={styles.loginContainer}>
         <Text>Bạn đã có tài khoản ?</Text>

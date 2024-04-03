@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 const OtpScreen = ({ navigation }) => {
   const route = useRoute();
   const data = route.params.user;
+  console.log(data);
   const [otp, setOtp] = useState("");
   const [verificationId, setVerificationId] = useState(null);
   const [captchaVisible, setCaptchaVisible] = useState(true);
@@ -26,6 +27,12 @@ const OtpScreen = ({ navigation }) => {
 
   let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
+    const req = await userApi.sendNewOTP(data);
+    console.log("Check resendotp:", req);
+    if (req.EC == 0) {
+      alert(req.EM);
+      Alert.alert(req.EM);
+    }
     // const phoneProvider = new firebase.auth.PhoneAuthProvider();
     // phoneProvider
     //   .verifyPhoneNumber(phone, recaptchaVerifier.current)
@@ -46,17 +53,21 @@ const OtpScreen = ({ navigation }) => {
     //   .catch((error) => {
     //     console.log("Error:", error);
     //   });
-    let req = await userApi.register(data);
-    alert("Đăng ký thành công!");
-    Alert.alert("Đăng ký thành công!");
-    navigation.navigate("Login");
+    let req = await userApi.confirmAccount(data, otp);
+    console.log("Check otpscreen:", req);
+    if (req.EM) {
+      alert(req.EM);
+      Alert.alert(req.EM);
+    } else {
+      alert("Xác thực thành công!");
+      Alert.alert("Xác thực thành công!");
+      navigation.navigate("Login");
+    }
   };
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.message}>
-          Mã OTP đã được gửi đến email: {data.email}
-        </Text>
+        <Text style={styles.message}>Mã OTP đã được gửi đến email</Text>
         <Text
           style={{
             marginTop: 5,
@@ -66,7 +77,7 @@ const OtpScreen = ({ navigation }) => {
             fontWeight: 600,
           }}
         >
-          {data.phone}
+          {data.email}
         </Text>
         <TouchableOpacity
           style={{
@@ -78,7 +89,7 @@ const OtpScreen = ({ navigation }) => {
           }}
           onPress={handlerSendOtp}
         >
-          <Text style={styles.submitButtonText}>Gửi OTP</Text>
+          <Text style={styles.submitButtonText}>OTP Mới</Text>
         </TouchableOpacity>
 
         {/* <View style={{ marginTop: 5 }}>

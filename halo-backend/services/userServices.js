@@ -3,6 +3,11 @@ import User from "../models/user";
 import bcrypt from "bcrypt";
 import userValidate from "../validates/userValidate";
 import jwtService from "../jwt/jwtServices";
+const OTP_EXPIRE_MINUTE = parseInt(process.env.OTP_EXPIRE_MINUTE);
+import commonUtils from "../utils/commonUtils";
+import templateHtml from "../utils/templateHtml";
+import { mailer } from "../utils/mailer";
+import { use } from "passport";
 const salt = bcrypt.genSaltSync(10);
 const hashPassword = (password) => {
   const hash = bcrypt.hashSync(password, salt);
@@ -34,10 +39,59 @@ const checkValidate = async (user) => {
 const userRegistry = async (user) => {
   let password = hashPassword(user.password);
   const newUser = new User({ ...user, password });
-  await newUser.save();
+  const saveUser = await newUser.save();
+  const { _id, email } = saveUser;
+  await sendOtp(_id, email);
   return {
     EC: 0,
+    DT: saveUser,
   };
+};
+// Confirm account
+const confirmAccount = async (user, otp) => {
+  await userValidate.validateOTP(otp);
+  const account = await User.findOne(
+    { phone: user.phone },
+    "name phone avatar email otp otpTime"
+  ).exec();
+  if (account) {
+    if (new Date() > account.otpTime) {
+      return {
+        EM: "OTP hết hạn",
+      };
+    }
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id },
+        {
+          $set: {
+            otp: "",
+            otpTime: Date.now(),
+            isActive: "1",
+          },
+        },
+        {
+          new: true,
+          select: "_id name phone otp otpTime isActive",
+        }
+      );
+
+      if (!updatedUser) {
+        console.log("CheckDB:", updatedUser);
+        return {
+          EM: "Tài khoản xác thực không tồn tại!",
+        };
+      }
+
+      return {
+        DT: updatedUser,
+        EC: 0,
+      };
+    } catch (error) {
+      console.error("Xác thực thất bại:", error);
+      throw error;
+    }
+  }
 };
 // User Login
 const userLogin = async (user) => {
@@ -54,6 +108,13 @@ const userLogin = async (user) => {
   if (comparePassword) {
     // let token = await jwtService.signToken(account.phone);
     const { password, ...userData } = account.toObject(); // Loại bỏ trường password từ đối tượng tài khoản
+    if (account.isActive == "0") {
+      return {
+        EC: 1,
+        EM: "Vui lòng xác thực tài khoản để đăng nhập!",
+        DT: userData,
+      };
+    }
     return {
       EC: 0,
       DT: userData,
@@ -138,6 +199,40 @@ const changePassword = async (user) => {
     console.log("Error: ", error);
   }
 };
+// Resend OTP
+const resendOTP = async (newUser) => {
+  const user = await User.findOne({ email: newUser.email });
+
+  if (user) {
+    const { _id, email } = user;
+
+    await sendOtp(_id, email);
+    return {
+      EC: 0,
+      EM: "Đã gửi OTP xác thực",
+    };
+  }
+};
+
+//Send Otp
+const sendOtp = async (_id, email) => {
+  const otp = commonUtils.getRandomOTP();
+  const otpTime = new Date();
+  otpTime.setMinutes(otpTime.getMinutes() + OTP_EXPIRE_MINUTE);
+  const regis = await User.updateOne({ _id }, { otp, otpTime });
+  if (regis)
+    mailer.sendMail(
+      email,
+      "Halo - OTP xác nhận tài khoản",
+      templateHtml.getOtpHtml(otp, OTP_EXPIRE_MINUTE)
+    );
+
+  return {
+    EC: 0,
+    EM: "Đã gửi OTP xác thực",
+  };
+};
+
 module.exports = {
   checkValidate,
   userRegistry,
@@ -145,4 +240,6 @@ module.exports = {
   searchByPhone,
   updateUser,
   changePassword,
+  confirmAccount,
+  resendOTP,
 };

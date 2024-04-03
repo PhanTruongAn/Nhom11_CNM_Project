@@ -36,7 +36,24 @@ const handlerRegistry = async (req, res) => {
     });
   }
 };
-
+// Handler Confirm Account
+const handleConfirmAccount = async (req, res) => {
+  try {
+    let data = await userService.confirmAccount(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Xác thực không thành công",
+      EC: -1,
+      DT: [],
+    });
+  }
+};
 // Handler Login
 const handleLogin = async (req, res) => {
   try {
@@ -108,6 +125,18 @@ const handlerChangePassword = async (req, res) => {
     console.log(error);
   }
 };
+const handlerNewOtp = async (req, res) => {
+  try {
+    let data = await userService.resendOTP(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   handlerCheckValidate,
   handlerRegistry,
@@ -116,4 +145,6 @@ module.exports = {
   handlerSearchByPhone,
   handlerUpdateUser,
   handlerChangePassword,
+  handleConfirmAccount,
+  handlerNewOtp,
 };
