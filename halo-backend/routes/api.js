@@ -18,6 +18,7 @@ const initAppRoutes = (app) => {
   router.post("/change-password", userController.handlerChangePassword);
   router.post("/confirm-account", userController.handleConfirmAccount);
   router.post("/new-otp", userController.handlerNewOtp);
+  router.post("/forgot-password", userController.handlerForgotPassword);
   return app.use("/", router);
 };
 export default initAppRoutes;

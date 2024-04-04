@@ -57,8 +57,7 @@ const Registration = ({ navigation }) => {
         alert(req.EM);
         Alert.alert(req.EM);
       } else {
-        let userRegis = await userApi.register(user);
-        console.log("Check UserRegis:", userRegis);
+        const userRegis = await userApi.register(user);
         navigation.navigate("OtpScreen", { user: userRegis.DT });
       }
     } else {

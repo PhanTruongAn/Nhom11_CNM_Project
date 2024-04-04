@@ -41,15 +41,14 @@ const userRegistry = async (user) => {
   const newUser = new User({ ...user, password });
   const saveUser = await newUser.save();
   const { _id, email } = saveUser;
-  await sendOtp(_id, email);
+  const userFull = await sendOtp(_id, email);
   return {
     EC: 0,
-    DT: saveUser,
+    DT: userFull.DT,
   };
 };
 // Confirm account
-const confirmAccount = async (user, otp) => {
-  await userValidate.validateOTP(otp);
+const confirmAccount = async (user) => {
   const account = await User.findOne(
     { phone: user.phone },
     "name phone avatar email otp otpTime"
@@ -77,9 +76,8 @@ const confirmAccount = async (user, otp) => {
       );
 
       if (!updatedUser) {
-        console.log("CheckDB:", updatedUser);
         return {
-          EM: "Tài khoản xác thực không tồn tại!",
+          EM: "Xác thực thất bại!",
         };
       }
 
@@ -88,7 +86,7 @@ const confirmAccount = async (user, otp) => {
         EC: 0,
       };
     } catch (error) {
-      console.error("Xác thực thất bại:", error);
+      console.error("Error from server:", error);
       throw error;
     }
   }
@@ -97,7 +95,7 @@ const confirmAccount = async (user, otp) => {
 const userLogin = async (user) => {
   const account = await User.findOne(
     { phone: user.phone },
-    "_id name phone email password avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
+    "_id name phone email password avatar otp otpTime sex dateOfBirth isActive friendRequests sendFriendRequests friends"
   ).exec();
   if (!account) {
     return {
@@ -199,6 +197,22 @@ const changePassword = async (user) => {
     console.log("Error: ", error);
   }
 };
+// Forgot Password
+const forgotPassword = async (user) => {
+  const account = await User.findOne({ email: user.email }).exec();
+  if (!account) {
+    return {
+      EM: "Email không tồn tại!",
+    };
+  }
+  const { _id, email } = account;
+  const userFull = await sendOtp(_id, email);
+  return {
+    EC: 0,
+    EM: "Mật khẩu đã được gửi về email của bạn!",
+    DT: userFull.DT,
+  };
+};
 // Resend OTP
 const resendOTP = async (newUser) => {
   const user = await User.findOne({ email: newUser.email });
@@ -206,10 +220,11 @@ const resendOTP = async (newUser) => {
   if (user) {
     const { _id, email } = user;
 
-    await sendOtp(_id, email);
+    const userFull = await sendOtp(_id, email);
     return {
       EC: 0,
-      EM: "Đã gửi OTP xác thực",
+      EM: "Đã gửi lại OTP xác thực",
+      DT: userFull.DT,
     };
   }
 };
@@ -219,7 +234,19 @@ const sendOtp = async (_id, email) => {
   const otp = commonUtils.getRandomOTP();
   const otpTime = new Date();
   otpTime.setMinutes(otpTime.getMinutes() + OTP_EXPIRE_MINUTE);
-  const regis = await User.updateOne({ _id }, { otp, otpTime });
+  const regis = await User.findOneAndUpdate(
+    { _id: _id },
+    {
+      $set: {
+        otp: otp,
+        otpTime: otpTime,
+      },
+    },
+    {
+      new: true,
+      select: "_id name phone email otp otpTime",
+    }
+  );
   if (regis)
     mailer.sendMail(
       email,
@@ -230,6 +257,7 @@ const sendOtp = async (_id, email) => {
   return {
     EC: 0,
     EM: "Đã gửi OTP xác thực",
+    DT: regis,
   };
 };
 
@@ -242,4 +270,5 @@ module.exports = {
   changePassword,
   confirmAccount,
   resendOTP,
+  forgotPassword,
 };

@@ -69,6 +69,10 @@ const Information = ({ navigation }) => {
             <Text style={styles.index}>Điện thoại </Text>
             <Text style={{ marginLeft: "15%", padding: 7 }}>{user.phone}</Text>
           </View>
+          <View style={styles.custom}>
+            <Text style={styles.index}>Email</Text>
+            <Text style={{ marginLeft: "25%", padding: 7 }}>{user.email}</Text>
+          </View>
         </View>
         <View>
           <TouchableOpacity

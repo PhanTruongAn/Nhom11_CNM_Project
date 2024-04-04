@@ -11,17 +11,7 @@ const userValidate = {
       EC: 0,
     };
   },
-  validateOTP: (otp) => {
-    const regex = /^[0-9]{6}$/g;
-    if (!regex.test(otp))
-      return {
-        EM: "Mã OTP gồm 6 kí tự số",
-      };
 
-    return {
-      EC: 0,
-    };
-  },
   checkPhone: async (phone) => {
     const regex = /^0[0-9]{9,10}$/;
     if (!regex.test(phone)) {

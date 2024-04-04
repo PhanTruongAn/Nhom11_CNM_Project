@@ -10,13 +10,14 @@ import {
 import Icon from "react-native-vector-icons/AntDesign";
 import { useDispatch, useSelector } from "react-redux";
 import userApi from "../api/userApi";
-const ChangePassScreen = ({ navigation }) => {
-  const [oldPassword, setOldPassword] = useState("");
+import { useRoute } from "@react-navigation/core";
+const NewPassword = ({ navigation }) => {
+  const route = useRoute();
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const user = useSelector((state) => state.userLogin.user);
+  const user = route.params.user;
   const handleSavePassword = async () => {
     if (newPassword !== confirmNewPassword) {
       alert("Mật khẩu mới không khớp. Vui lòng nhập lại.");
@@ -30,7 +31,6 @@ const ChangePassScreen = ({ navigation }) => {
     if (req) {
       alert("Đổi mật khẩu thành công");
       navigation.navigate("Login");
-      setOldPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
     } else {
@@ -40,17 +40,6 @@ const ChangePassScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-          style={styles.backButton}
-        >
-          <Icon name="arrowleft" size={24} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Đổi mật khẩu</Text>
-      </View>
       <View style={styles.contentContainer}>
         <View style={styles.inputContainer}>
           <TextInput
@@ -159,4 +148,4 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-export default ChangePassScreen;
+export default NewPassword;

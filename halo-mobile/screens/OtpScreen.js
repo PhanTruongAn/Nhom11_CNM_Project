@@ -14,56 +14,55 @@ import {
 } from "react-native";
 import userApi from "../api/userApi";
 import Icon from "react-native-vector-icons/AntDesign";
-
+import userValidate from "../validates/userValidate";
 const OtpScreen = ({ navigation }) => {
   const route = useRoute();
-  const data = route.params.user;
-  console.log(data);
+  const [data, setData] = useState(route.params.user);
+  console.log("Data Otp Screen:", data);
   const [otp, setOtp] = useState("");
   const [verificationId, setVerificationId] = useState(null);
-  const [captchaVisible, setCaptchaVisible] = useState(true);
+  const [captchaVisible, setCaptchaVisible] = useState(false);
   const recaptchaVerifier = useRef(null);
   /////////////////////
-
-  let phone = "+84 " + data.phone.slice(1);
   const handlerSendOtp = async () => {
     const req = await userApi.sendNewOTP(data);
-    console.log("Check resendotp:", req);
+    setData(req.DT);
     if (req.EC == 0) {
       alert(req.EM);
       Alert.alert(req.EM);
     }
-    // const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    // phoneProvider
-    //   .verifyPhoneNumber(phone, recaptchaVerifier.current)
-    //   .then(setVerificationId);
-    // console.log("Check provider:", phoneProvider);
   };
   const handleSubmitOtp = async () => {
-    // const credential = firebase.auth.PhoneAuthProvider.credential(
-    //   verificationId,
-    //   otp
-    // );
-    // firebase
-    //   .auth()
-    //   .signInWithCredential(credential)
-    //   .then(() => {
-    //     setOtp("");
-    //   })
-    //   .catch((error) => {
-    //     console.log("Error:", error);
-    //   });
-    let req = await userApi.confirmAccount(data, otp);
-    console.log("Check otpscreen:", req);
-    if (req.EM) {
-      alert(req.EM);
-      Alert.alert(req.EM);
-    } else {
-      alert("Xác thực thành công!");
-      Alert.alert("Xác thực thành công!");
-      navigation.navigate("Login");
+    let isValid = true;
+
+    const validate = userValidate.validateOTP(otp);
+    if (validate.EC !== 0) {
+      isValid = false;
+      alert("Mã OTP không hợp lệ");
+      Alert.alert("Mã OTP không hợp lệ");
+    }
+
+    if (isValid && data.otp !== otp) {
+      isValid = false;
+      console.log("otp nhap", otp);
+      console.log("otp db:", data.otp);
+      alert("Mã OTP xác thực không đúng");
+      Alert.alert("Mã OTP xác thực không đúng");
+    }
+
+    if (isValid) {
+      const req = await userApi.confirmAccount(data);
+      if (req.EM) {
+        alert(req.EM);
+        Alert.alert(req.EM);
+      } else {
+        alert("Xác thực thành công!");
+        Alert.alert("Xác thực thành công!");
+        navigation.navigate("Login");
+      }
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -74,7 +73,7 @@ const OtpScreen = ({ navigation }) => {
             fontSize: 16,
             color: "black",
             textAlign: "center",
-            fontWeight: 600,
+            fontWeight: "bold",
           }}
         >
           {data.email}
@@ -91,13 +90,6 @@ const OtpScreen = ({ navigation }) => {
         >
           <Text style={styles.submitButtonText}>OTP Mới</Text>
         </TouchableOpacity>
-
-        {/* <View style={{ marginTop: 5 }}>
-          <FirebaseRecaptchaVerifierModal
-            ref={recaptchaVerifier}
-            firebaseConfig={firebaseConfig}
-          />
-        </View> */}
 
         <View style={styles.otpContainer}>
           <TextInput
@@ -163,7 +155,7 @@ const styles = StyleSheet.create({
   },
   otpInput: {
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: "bold",
     marginTop: 20,
     width: 150,
     height: 40,

@@ -29,13 +29,17 @@ const userApi = {
     const url = "/change-password";
     return axiosClient.post(url, user);
   },
-  confirmAccount: (user, otp) => {
+  confirmAccount: (user) => {
     const url = "/confirm-account";
     return axiosClient.post(url, user);
   },
   sendNewOTP: (user) => {
     const url = "/new-otp";
     return axiosClient.post(url, user);
+  },
+  forgotPassword: (email) => {
+    const url = "/forgot-password";
+    return axiosClient.post(url, email);
   },
 };
 export default userApi;

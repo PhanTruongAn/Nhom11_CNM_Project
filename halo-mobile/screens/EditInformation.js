@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import userApi from "../api/userApi";
 import extendFunctions from "../constants/extendFunctions";
 import { updateUser } from "../redux/userSlice";
+
 const EditInformation = ({ navigation }) => {
   const user = useSelector((state) => state.userLogin.user);
   const dispatch = useDispatch();
@@ -26,12 +27,15 @@ const EditInformation = ({ navigation }) => {
   const handleChangeName = (event) => {
     setName(event.target.value);
   };
-  const handleChangeBirthday = (event) => {
-    setBirthday(event.target.value);
+
+  const handleChangeBirthday = (text) => {
+    setBirthday(text);
   };
+
   const handleSelectGender = (gender) => {
     setSelectedGender(gender);
   };
+
   const handleEditName = () => {
     setEditingName(true);
   };
@@ -59,6 +63,12 @@ const EditInformation = ({ navigation }) => {
     dispatch(updateUser(req.DT));
     Alert.alert("Cập nhật thành công!");
   };
+
+  const handleEditAvatar = () => {
+    // Xử lý sự kiện khi người dùng muốn chỉnh sửa avatar
+    // Ví dụ: mở thư viện ảnh để chọn avatar mới
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -75,12 +85,15 @@ const EditInformation = ({ navigation }) => {
       <View style={styles.contentContainer}>
         <View style={styles.infoContainer}>
           <View style={styles.avatarContainer}>
-            <Avatar
-              size={100}
-              rounded
-              title={extendFunctions.getAvatarName(user.name)}
-              containerStyle={{ backgroundColor: user.avatar.color }}
-            />
+            <TouchableOpacity onPress={handleEditAvatar}>
+              <Avatar
+                size={100}
+                rounded
+                title={extendFunctions.getAvatarName(user.name)}
+                containerStyle={{ backgroundColor: user.avatar.color }}
+              />
+              <Icon name="edit" size={20} style={styles.editAvatarIcon} />
+            </TouchableOpacity>
           </View>
           <View style={styles.detailsContainer}>
             <View style={styles.inputContainer}>
@@ -115,9 +128,10 @@ const EditInformation = ({ navigation }) => {
                 <>
                   <TextInput
                     value={birthday}
-                    onChange={handleChangeBirthday}
+                    onChangeText={handleChangeBirthday}
                     style={styles.input}
                   />
+
                   <TouchableOpacity
                     style={styles.editIcon}
                     onPress={handleSaveBirthday}
@@ -291,6 +305,17 @@ const styles = StyleSheet.create({
   },
   selectedGenderText: {
     color: "white",
+  },
+  editAvatarIcon: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#dadada",
+    color: "#007bff",
   },
 });
 
