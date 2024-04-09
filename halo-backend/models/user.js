@@ -46,20 +46,99 @@ const userSchema = new mongoose.Schema(
     },
     friendRequests: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        name: {
+          type: String,
+          ref: "User",
+        },
+        phone: {
+          type: String,
+          ref: "User",
+        },
+        avatar: {
+          type: {
+            uri: {
+              type: String,
+            },
+            color: {
+              type: String,
+            },
+          },
+          ref: "User",
+        },
       },
     ],
     sendFriendRequests: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        name: {
+          type: String,
+          ref: "User",
+        },
+        phone: {
+          type: String,
+          ref: "User",
+        },
+        avatar: {
+          type: {
+            uri: {
+              type: String,
+            },
+            color: {
+              type: String,
+            },
+          },
+          ref: "User",
+        },
       },
     ],
     friends: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        name: {
+          type: String,
+          ref: "User",
+        },
+        phone: {
+          type: String,
+          ref: "User",
+        },
+        email: {
+          type: String,
+          require: true,
+        },
+        sex: {
+          type: String,
+          default: "",
+        },
+        dateOfBirth: {
+          type: String,
+          default: "",
+        },
+        isActive: {
+          type: String,
+          default: "0",
+        },
+        avatar: {
+          type: {
+            uri: {
+              type: String,
+            },
+            color: {
+              type: String,
+            },
+          },
+          ref: "User",
+        },
       },
     ],
   },

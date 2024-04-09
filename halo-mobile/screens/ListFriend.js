@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
+import { useDispatch, useSelector } from "react-redux";
+import { Avatar } from "@rneui/themed";
+import extendFunctions from "../constants/extendFunctions";
+import friendApi from "../api/friendApi";
+import { updateUser } from "../redux/userSlice";
 const Tab = createMaterialTopTabNavigator();
 
 const FriendListScreen = ({ navigation }) => {
@@ -91,14 +95,20 @@ const FriendListScreen = ({ navigation }) => {
               iconName = "people";
             } else if (route.name === "Groups") {
               iconName = "business";
+            } else if (route.name === "Friend Request") {
+              iconName = "people-circle";
+            } else if (route.name === "Add Friend") {
+              iconName = "list";
             }
 
             // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return <Ionicons name={iconName} size={20} color={color} />;
           },
         })}
       >
         <Tab.Screen name="Friends" component={FriendListComponent} />
+        <Tab.Screen name="Add Friend" component={FriendRequestComponent} />
+        <Tab.Screen name="Friend Request" component={AddFriendComponent} />
         <Tab.Screen name="Groups" component={GroupListComponent} />
       </Tab.Navigator>
     </View>
@@ -106,21 +116,161 @@ const FriendListScreen = ({ navigation }) => {
 };
 
 const FriendListComponent = () => {
-  const friendsData = [
-    { id: "1", name: "Friend 1" },
-    { id: "2", name: "Friend 2" },
-    // ... more friends
-  ];
-
+  const user = useSelector((state) => state.userLogin.user);
+  const dispatch = useDispatch();
   return (
     <FlatList
-      data={friendsData}
-      keyExtractor={(item) => item.id}
+      data={user.friends}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.itemContainer}>
-          <Ionicons name="person" size={24} color="black" style={styles.icon} />
+        <View style={styles.itemContainer}>
+          <View>
+            <Avatar
+              size={50}
+              rounded
+              title={extendFunctions.getAvatarName(item.name)}
+              containerStyle={{ backgroundColor: item.avatar.color }}
+            />
+          </View>
           <Text style={styles.itemText}>{item.name}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 70,
+              height: 40,
+              justifyContent: "center",
+              backgroundColor: "red",
+              borderRadius: 10,
+              position: "absolute",
+              right: 10,
+            }}
+            onPress={async () => {
+              const data = {
+                phoneSender: user.phone,
+                phoneReceiver: item.phone,
+              };
+              const req = await friendApi.deleteFriend(data);
+              console.log("CheckReq:", req);
+              dispatch(updateUser(req.DT));
+            }}
+          >
+            <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>
+              Xóa bạn
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    />
+  );
+};
+const AddFriendComponent = () => {
+  const user = useSelector((state) => state.userLogin.user);
+  const dispatch = useDispatch();
+  return (
+    <FlatList
+      data={user.friendRequests}
+      renderItem={({ item }) => (
+        <View style={styles.itemContainer}>
+          <View>
+            <Avatar
+              size={50}
+              rounded
+              title={extendFunctions.getAvatarName(item.name)}
+              containerStyle={{ backgroundColor: item.avatar.color }}
+            />
+          </View>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <TouchableOpacity
+            style={{
+              width: 80,
+              height: 30,
+              justifyContent: "center",
+              backgroundColor: "green",
+              borderRadius: 10,
+              position: "absolute",
+              right: 70,
+            }}
+            onPress={async () => {
+              const data = {
+                phoneSender: user.phone,
+                phoneReceiver: item.phone,
+              };
+              const req = await friendApi.confirmAddFriend(data);
+              console.log("CheckReq:", req);
+              dispatch(updateUser(req.DT));
+            }}
+          >
+            <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
+              Chấp nhận
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 50,
+              height: 30,
+              justifyContent: "center",
+              backgroundColor: "red",
+              borderRadius: 10,
+              position: "absolute",
+              right: 10,
+            }}
+            onPress={async () => {
+              const data = {
+                phoneSender: user.phone,
+                phoneReceiver: item.phone,
+              };
+              const req = await friendApi.cancelAddFriendByReceiver(data);
+              dispatch(updateUser(req.DT));
+            }}
+          >
+            <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
+              Hủy
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    />
+  );
+};
+const FriendRequestComponent = () => {
+  const user = useSelector((state) => state.userLogin.user);
+  const dispatch = useDispatch();
+  return (
+    <FlatList
+      data={user.sendFriendRequests}
+      renderItem={({ item }) => (
+        <View style={styles.itemContainer}>
+          <View>
+            <Avatar
+              size={50}
+              rounded
+              title={extendFunctions.getAvatarName(item.name)}
+              containerStyle={{ backgroundColor: item.avatar.color }}
+            />
+          </View>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <TouchableOpacity
+            style={{
+              width: 70,
+              height: 40,
+              justifyContent: "center",
+              backgroundColor: "red",
+              borderRadius: 10,
+              position: "absolute",
+              right: 10,
+            }}
+            onPress={async () => {
+              const data = {
+                phoneSender: user.phone,
+                phoneReceiver: item.phone,
+              };
+              const req = await friendApi.cancelAddFriend(data);
+              dispatch(updateUser(req.DT));
+            }}
+          >
+            <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>
+              Hủy bỏ
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
     />
   );
@@ -138,10 +288,10 @@ const GroupListComponent = () => {
       data={groupsData}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.itemContainer}>
+        <View style={styles.itemContainer}>
           <Ionicons name="people" size={24} color="black" style={styles.icon} />
           <Text style={styles.itemText}>{item.name}</Text>
-        </TouchableOpacity>
+        </View>
       )}
     />
   );
@@ -179,12 +329,13 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
   itemText: {
-    fontSize: 16,
+    marginLeft: 10,
+    fontSize: 15,
     color: "#333",
   },
   icon: {

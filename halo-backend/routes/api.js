@@ -1,6 +1,7 @@
 import express from "express";
 import userController from "../controllers/userController";
 import userService from "../services/userServices";
+import friendController from "../controllers/friendController";
 // import { checkCookie } from "../middleware/jwtMiddleware";
 const router = express.Router();
 /**
@@ -9,6 +10,7 @@ const router = express.Router();
  */
 
 const initAppRoutes = (app) => {
+  //User Route
   router.post("/checkValidate", userController.handlerCheckValidate);
   router.post("/registry", userController.handlerRegistry);
   router.post("/login", userController.handleLogin);
@@ -19,6 +21,15 @@ const initAppRoutes = (app) => {
   router.post("/confirm-account", userController.handleConfirmAccount);
   router.post("/new-otp", userController.handlerNewOtp);
   router.post("/forgot-password", userController.handlerForgotPassword);
+  //Friend Route
+  router.post("/friend-request", friendController.sendAddFriend);
+  router.post("/cancel-add-friend", friendController.cancelSendAddFriend);
+  router.post(
+    "/cancel-add-friend-by-receiver",
+    friendController.cancelFriendByReceiver
+  );
+  router.post("/confirm-friend-request", friendController.confirmAddFriend);
+  router.post("/delete-friend", friendController.deleteFriend);
   return app.use("/", router);
 };
 export default initAppRoutes;

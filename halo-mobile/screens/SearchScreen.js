@@ -86,7 +86,6 @@ const SearchScreen = ({ navigation }) => {
               setSearchQuery(e);
               const req = await userApi.searchByPhone(user);
               if (req.DT) {
-                console.log(req.DT);
                 setSearchResults(req.DT);
                 setShowNoResults(true);
               }
@@ -106,7 +105,8 @@ const SearchScreen = ({ navigation }) => {
       {showResults ? (
         <TouchableOpacity
           onPress={() => {
-            // navigation.navigate("MeScreen", searchResults);
+            console.log(searchResults);
+            navigation.navigate("TrangKetBan", { searchResults });
           }}
         >
           <ContactDetails user={searchResults} />

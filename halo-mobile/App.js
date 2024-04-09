@@ -15,7 +15,10 @@ import SearchScreen from "./screens/SearchScreen";
 import ChangePassScreen from "./screens/ChangePassScreen";
 import OtpScreen from "./screens/OtpScreen";
 import OTPOption from "./screens/OTPOption";
+import TrangKetBan from "./screens/TrangKetBan";
 import NewPassword from "./screens/NewPassword";
+import SearchInfo from "./screens/SearchInfo";
+import BaCham from "./screens/BaCham";
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -56,6 +59,11 @@ const App = () => {
             options={{ headerShown: false }}
             name="Information"
             component={Information}
+          ></Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="SearchInfo"
+            component={SearchInfo}
           ></Stack.Screen>
           <Stack.Screen
             options={{
@@ -113,9 +121,23 @@ const App = () => {
             name="NewPassword"
             component={NewPassword}
           ></Stack.Screen>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="TrangKetBan"
+            component={TrangKetBan}
+          ></Stack.Screen>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="BaCham"
+            component={BaCham}
+          ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <Information /> */}
+      {/* <TrangKetBan /> */}
     </Provider>
   );
 };

@@ -95,7 +95,7 @@ const confirmAccount = async (user) => {
 const userLogin = async (user) => {
   const account = await User.findOne(
     { phone: user.phone },
-    "_id name phone email password avatar otp otpTime sex dateOfBirth isActive friendRequests sendFriendRequests friends"
+    "_id name phone email password avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
   ).exec();
   if (!account) {
     return {
