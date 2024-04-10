@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   FlatList,
@@ -9,28 +9,51 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SearchScreen from "./SearchScreen";
-const ChatListScreen = ({ navigation }) => {
-  const [chatList, setChatList] = useState([
-    {
-      id: "1",
-      name: "Friend 1",
-      message: "Hello",
-      time: "12:30 PM",
-      unreadCount: 2,
-    },
-    {
-      id: "2",
-      name: "Friend 2",
-      message: "Hi there",
-      time: "1:45 PM",
-      unreadCount: 0,
-    },
-    // ... more chat items
-  ]);
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, updateUser } from "../redux/userSlice";
 
+const ChatListScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const [isReady, setIsReady] = useState(false); // Flag to track if useEffect is done
+  const [isDataLoaded, setIsDataLoaded] = useState(false); // Flag to track if data is loaded from Redux
+  const [chatList, setChatList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AsyncStorage.getItem("login");
+        if (data) {
+          dispatch(updateUser(JSON.parse(data)));
+          console.log("DataStorage:", JSON.parse(data));
+        }
+        setIsDataLoaded(true); // Marking data as loaded from Redux
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [dispatch]);
+
+  // Lấy dữ liệu user từ Redux store chỉ khi dữ liệu đã được cập nhật
+  const userLogin = useSelector((state) => {
+    if (isDataLoaded) {
+      return state.userLogin.user;
+    } else {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    if (userLogin !== null) {
+      setIsReady(true); // Marking useEffect as done when user data is available
+      setChatList(userLogin.friends);
+    }
+  }, [userLogin]);
+
+  console.log("DataRedux:", userLogin);
   const filteredChatList = chatList.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -67,6 +90,11 @@ const ChatListScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  if (!isReady) {
+    // Wait for useEffect to complete
+    return null;
+  }
+
   return (
     <View style={styles.screen}>
       <TouchableOpacity style={styles.searchContainer} onPress={onFocusSearch}>
@@ -96,7 +124,7 @@ const ChatListScreen = ({ navigation }) => {
       </TouchableOpacity>
       <FlatList
         data={filteredChatList}
-        keyExtractor={(item) => item.id}
+        // keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
     </View>
@@ -116,7 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#3498db", // Màu xanh dương
     borderRadius: 5,
     paddingHorizontal: 10,
-    // paddingVertical: 5,
     width: "100%",
   },
   searchIcon: {

@@ -8,6 +8,7 @@ import extendFunctions from "../constants/extendFunctions";
 import Icon from "react-native-vector-icons/AntDesign";
 import friendApi from "../api/friendApi";
 import { updateUser } from "../redux/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const TrangKetBan = ({ navigation }) => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin.user);
@@ -20,6 +21,7 @@ const TrangKetBan = ({ navigation }) => {
     };
     const req = await friendApi.sendAddFriend(data);
     dispatch(updateUser(req.DT));
+    await AsyncStorage.setItem("login", JSON.stringify(req.DT));
     console.log("Req:", req);
   };
   const image = extendFunctions.randomImage();

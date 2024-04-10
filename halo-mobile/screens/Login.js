@@ -12,6 +12,7 @@ import {
 import Icon from "react-native-vector-icons/Entypo";
 import userApi from "../api/userApi";
 import socket from "../config/configSocket";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { fetchUserToken, loginUser } from "../redux/userSlice";
 const Login = ({ navigation }) => {
@@ -39,6 +40,10 @@ const Login = ({ navigation }) => {
         dispatch(loginUser(req.DT));
         alert("Đăng nhập thành công!");
         Alert.alert("Đăng nhập thành công!");
+        await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+        await AsyncStorage.setItem("isLoggedIn", JSON.stringify(true));
+        // await AsyncStorage.removeItem("login");
+        // await AsyncStorage.removeItem("isLoggedIn");
         navigation.navigate("BottomTabNavigator");
         setPhone("");
         setPassword("");

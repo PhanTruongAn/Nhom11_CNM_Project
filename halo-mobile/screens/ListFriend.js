@@ -14,6 +14,7 @@ import { Avatar } from "@rneui/themed";
 import extendFunctions from "../constants/extendFunctions";
 import friendApi from "../api/friendApi";
 import { updateUser } from "../redux/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createMaterialTopTabNavigator();
 
 const FriendListScreen = ({ navigation }) => {
@@ -150,6 +151,7 @@ const FriendListComponent = () => {
               const req = await friendApi.deleteFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
+              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>
@@ -196,6 +198,7 @@ const AddFriendComponent = () => {
               const req = await friendApi.confirmAddFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
+              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
@@ -219,6 +222,7 @@ const AddFriendComponent = () => {
               };
               const req = await friendApi.cancelAddFriendByReceiver(data);
               dispatch(updateUser(req.DT));
+              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
@@ -264,6 +268,7 @@ const FriendRequestComponent = () => {
               };
               const req = await friendApi.cancelAddFriend(data);
               dispatch(updateUser(req.DT));
+              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>

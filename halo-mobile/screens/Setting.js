@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import extendFunctions from "../constants/extendFunctions";
 import { Avatar } from "@rneui/themed";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin.user);
@@ -21,8 +21,10 @@ const SettingsScreen = ({ navigation }) => {
     setModalVisible(!isModalVisible);
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     setModalVisible(false);
+    await AsyncStorage.removeItem("login");
+    await AsyncStorage.removeItem("isLoggedIn");
     navigation.navigate("Login");
   };
 

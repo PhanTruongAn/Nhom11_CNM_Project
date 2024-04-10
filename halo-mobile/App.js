@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
@@ -19,12 +19,33 @@ import TrangKetBan from "./screens/TrangKetBan";
 import NewPassword from "./screens/NewPassword";
 import SearchInfo from "./screens/SearchInfo";
 import BaCham from "./screens/BaCham";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createNativeStackNavigator();
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isReady, setIsReady] = useState(false); // Flag to track if useEffect is done
+
+  const handlerLoggedIn = async () => {
+    const data = await AsyncStorage.getItem("isLoggedIn");
+    setIsLoggedIn(data === "true");
+    setIsReady(true); // Marking useEffect as done
+  };
+
+  useEffect(() => {
+    handlerLoggedIn();
+  }, []);
+
+  if (!isReady) {
+    // Wait for useEffect to complete
+    return null;
+  }
+
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          initialRouteName={isLoggedIn ? "BottomTabNavigator" : "Home"}
+        >
           <Stack.Screen
             options={{ headerShown: false }}
             name="Home"
@@ -137,8 +158,8 @@ const App = () => {
           ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <TrangKetBan /> */}
     </Provider>
   );
 };
+
 export default App;
