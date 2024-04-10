@@ -2,25 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import userApi from "../api/userApi";
 const initialState = {
   isAuthenticated: false,
-  user: {},
+  user: {
+    friends: [],
+    sendFriendRequests: [],
+    friendRequests: [],
+  },
 };
-// export const fetchUserToken = createAsyncThunk(
-//   "userLogin/login-user",
-//   async () => {
-//     try {
-//       const res = await userApi.login();
-
-//       if (res && res.EC === 0) {
-//         return await res.DT;
-//       } else {
-//         throw new Error(res.EM);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching user token:", error);
-//       throw error; // Re-throw the error to be captured by the rejected state
-//     }
-//   }
-// );
 
 export const userSlice = createSlice({
   name: "userLogin",
@@ -32,18 +19,42 @@ export const userSlice = createSlice({
     loginUser: (state, action) => {
       state.user = action.payload;
     },
+    friendRequest: (state, action) => {
+      state.user.friendRequests = [
+        ...state.user.friendRequests,
+        action.payload,
+      ];
+    },
+    cancelFriendRequest: (state, action) => {
+      state.user.sendFriendRequests = state.user.sendFriendRequests.filter(
+        (request) => request.phone !== action.payload.phone
+      );
+    },
+    cancelSendFriendRequest: (state, action) => {
+      state.user.friendRequests = state.user.friendRequests.filter(
+        (request) => request.phone !== action.payload.phone
+      );
+    },
+    confirmFriend: (state, action) => {
+      state.user.sendFriendRequests = state.user.sendFriendRequests.filter(
+        (request) => request.phone !== action.payload.phone
+      );
+      state.user.friends = [...state.user.friends, action.payload];
+    },
+    deleteFriend: (state, action) => {
+      state.user.friends = state.user.friends.filter(
+        (request) => request.phone !== action.payload.phone
+      );
+    },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(fetchUserToken.fulfilled, (state, action) => {
-  //       state.isAuthenticated = true;
-  //       state.user = action.payload;
-  //     })
-  //     .addCase(fetchUserToken.rejected, (state, action) => {
-  //       state.isAuthenticated = false;
-  //       state.user = {};
-  //     });
-  // },
 });
-export const { updateUser, loginUser } = userSlice.actions;
+export const {
+  updateUser,
+  loginUser,
+  friendRequest,
+  cancelSendFriendRequest,
+  cancelFriendRequest,
+  confirmFriend,
+  deleteFriend,
+} = userSlice.actions;
 export default userSlice.reducer;

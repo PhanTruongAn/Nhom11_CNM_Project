@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,11 +15,27 @@ import extendFunctions from "../constants/extendFunctions";
 import friendApi from "../api/friendApi";
 import { updateUser } from "../redux/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { handlerRefreshAccount } from "../config/configSocket";
+import { handlerCancelSendFriend } from "../config/configSocket";
+import { handlerCancelSend } from "../config/configSocket";
+import { handlerCancelAddFriend } from "../config/configSocket";
+import { handlerCancelAdd } from "../config/configSocket";
+import { handlerConfirmFriend } from "../config/configSocket";
+import { handlerConfirmAddFriend } from "../config/configSocket";
+import { handlerDeleteFriend } from "../config/configSocket";
+import { handlerDelete } from "../config/configSocket";
 const Tab = createMaterialTopTabNavigator();
 
 const FriendListScreen = ({ navigation }) => {
+  const user = useSelector((state) => state.userLogin.user);
+  console.log("Redux:", user);
+  // const fetchData = async () => {
+  //   await AsyncStorage.setItem("login", JSON.stringify(user));
+  //   const data = await AsyncStorage.getItem("login");
+  //   console.log("DataAsync", JSON.parse(data));
+  // };
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
-
   const friendsData = [
     { id: "1", name: "Friend 1" },
     { id: "2", name: "Friend 2" },
@@ -48,6 +64,22 @@ const FriendListScreen = ({ navigation }) => {
     navigation.navigate("SearchScreen");
   };
 
+  useEffect(() => {
+    // Gọi hàm handlerRefreshAccount khi component được render lần đầu tiên
+    handlerRefreshAccount(dispatch);
+  }, []);
+  useEffect(() => {
+    handlerCancelSend(dispatch);
+  }, []);
+  useEffect(() => {
+    handlerCancelAdd(dispatch);
+  }, []);
+  useEffect(() => {
+    handlerConfirmAddFriend(dispatch);
+  }, []);
+  useEffect(() => {
+    handlerDelete(dispatch);
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -148,6 +180,17 @@ const FriendListComponent = () => {
                 phoneSender: user.phone,
                 phoneReceiver: item.phone,
               };
+              const senderData = {
+                _id: user._id,
+                name: user.name,
+                phone: user.phone,
+                avatar: user.avatar,
+              };
+              handlerDeleteFriend({
+                sender: user.phone,
+                receiver: item.phone,
+                user: senderData,
+              });
               const req = await friendApi.deleteFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
@@ -164,8 +207,9 @@ const FriendListComponent = () => {
   );
 };
 const AddFriendComponent = () => {
-  const user = useSelector((state) => state.userLogin.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.userLogin.user);
+
   return (
     <FlatList
       data={user.friendRequests}
@@ -195,6 +239,11 @@ const AddFriendComponent = () => {
                 phoneSender: user.phone,
                 phoneReceiver: item.phone,
               };
+              handlerConfirmFriend({
+                sender: user.phone,
+                receiver: item.phone,
+                user: user,
+              });
               const req = await friendApi.confirmAddFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
@@ -220,6 +269,17 @@ const AddFriendComponent = () => {
                 phoneSender: user.phone,
                 phoneReceiver: item.phone,
               };
+              const senderData = {
+                _id: user._id,
+                name: user.name,
+                phone: user.phone,
+                avatar: user.avatar,
+              };
+              handlerCancelAddFriend({
+                sender: user.phone,
+                receiver: item.phone,
+                user: senderData,
+              });
               const req = await friendApi.cancelAddFriendByReceiver(data);
               dispatch(updateUser(req.DT));
               await AsyncStorage.setItem("login", JSON.stringify(req.DT));
@@ -237,6 +297,7 @@ const AddFriendComponent = () => {
 const FriendRequestComponent = () => {
   const user = useSelector((state) => state.userLogin.user);
   const dispatch = useDispatch();
+
   return (
     <FlatList
       data={user.sendFriendRequests}
@@ -266,7 +327,19 @@ const FriendRequestComponent = () => {
                 phoneSender: user.phone,
                 phoneReceiver: item.phone,
               };
+              const senderData = {
+                _id: user._id,
+                name: user.name,
+                phone: user.phone,
+                avatar: user.avatar,
+              };
+              handlerCancelSendFriend({
+                sender: user.phone,
+                receiver: item.phone,
+                user: senderData,
+              });
               const req = await friendApi.cancelAddFriend(data);
+
               dispatch(updateUser(req.DT));
               await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}

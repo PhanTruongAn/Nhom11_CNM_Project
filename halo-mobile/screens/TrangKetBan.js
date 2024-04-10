@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import friendApi from "../api/friendApi";
 import { updateUser } from "../redux/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { handlerSendText } from "../config/configSocket";
 const TrangKetBan = ({ navigation }) => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin.user);
@@ -20,7 +21,18 @@ const TrangKetBan = ({ navigation }) => {
       phoneReceiver: user.phone,
     };
     const req = await friendApi.sendAddFriend(data);
+    const senderData = {
+      _id: req.DT._id,
+      name: req.DT.name,
+      phone: req.DT.phone,
+      avatar: req.DT.avatar,
+    };
     dispatch(updateUser(req.DT));
+    handlerSendText({
+      sender: userLogin.phone,
+      receiver: user.phone,
+      user: senderData,
+    });
     await AsyncStorage.setItem("login", JSON.stringify(req.DT));
     console.log("Req:", req);
   };

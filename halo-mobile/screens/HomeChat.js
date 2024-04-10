@@ -8,17 +8,19 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Avatar } from "@rneui/themed";
 import SearchScreen from "./SearchScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import extendFunctions from "../constants/extendFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, updateUser } from "../redux/userSlice";
-
+import { handleCustomClient } from "../config/configSocket";
 const ChatListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [isReady, setIsReady] = useState(false); // Flag to track if useEffect is done
   const [isDataLoaded, setIsDataLoaded] = useState(false); // Flag to track if data is loaded from Redux
   const [chatList, setChatList] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ const ChatListScreen = ({ navigation }) => {
         const data = await AsyncStorage.getItem("login");
         if (data) {
           dispatch(updateUser(JSON.parse(data)));
-          console.log("DataStorage:", JSON.parse(data));
+          // console.log("DataStorage:", JSON.parse(data));
         }
         setIsDataLoaded(true); // Marking data as loaded from Redux
       } catch (error) {
@@ -50,18 +52,9 @@ const ChatListScreen = ({ navigation }) => {
     if (userLogin !== null) {
       setIsReady(true); // Marking useEffect as done when user data is available
       setChatList(userLogin.friends);
+      handleCustomClient({ customId: userLogin.phone });
     }
   }, [userLogin]);
-
-  console.log("DataRedux:", userLogin);
-  const filteredChatList = chatList.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const clearSearch = () => {
-    setSearchQuery("");
-    searchInputRef.current.clear();
-  };
 
   const onFocusSearch = () => {
     navigation.navigate("SearchScreen");
@@ -74,13 +67,20 @@ const ChatListScreen = ({ navigation }) => {
       }}
       style={styles.itemContainer}
     >
-      <View style={styles.avatarPlaceholder} />
+      <View style={{ padding: 8 }}>
+        <Avatar
+          size={50}
+          rounded
+          title={extendFunctions.getAvatarName(item.name)}
+          containerStyle={{ backgroundColor: item.avatar.color }}
+        />
+      </View>
       <View style={styles.content}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.message}>Hello</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.time}>{item.time}</Text>
+        <Text style={styles.time}>1 giờ</Text>
         {item.unreadCount > 0 && (
           <View style={styles.unreadBadge}>
             <Text>{item.unreadCount}</Text>
@@ -104,29 +104,11 @@ const ChatListScreen = ({ navigation }) => {
           color="#555"
           style={styles.searchIcon}
         />
-        <TextInput
-          ref={searchInputRef}
-          style={styles.searchInput}
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={clearSearch}>
-            <Ionicons
-              name="close-circle"
-              size={24}
-              color="#555"
-              style={styles.clearIcon}
-            />
-          </TouchableOpacity>
-        )}
+        <Text ref={searchInputRef} style={styles.searchInput}>
+          Search
+        </Text>
       </TouchableOpacity>
-      <FlatList
-        data={filteredChatList}
-        // keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-      />
+      <FlatList data={userLogin.friends} renderItem={renderItem} />
     </View>
   );
 };
@@ -178,11 +160,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "500",
+    marginLeft: 15,
+    position: "absolute",
+    top: -3,
+    // marginTop: -15,
   },
   message: {
+    fontSize: 16,
+    fontWeight: "500",
     color: "#777",
+    marginLeft: 15,
+    marginTop: 18,
   },
   info: {
     alignItems: "flex-end",

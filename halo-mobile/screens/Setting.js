@@ -25,7 +25,7 @@ const SettingsScreen = ({ navigation }) => {
     setModalVisible(false);
     await AsyncStorage.removeItem("login");
     await AsyncStorage.removeItem("isLoggedIn");
-    navigation.navigate("Login");
+    navigation.navigate("Home");
   };
 
   return (
