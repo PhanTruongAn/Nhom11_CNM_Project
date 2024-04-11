@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -13,17 +13,53 @@ import { Ionicons } from "@expo/vector-icons";
 // import ImagePicker from "react-native-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import IconPickerModal from "./IconPickerModal";
-
+import { useRoute } from "@react-navigation/core";
+import { useDispatch, useSelector } from "react-redux";
+import { senderMessenger } from "../config/configSocket";
+import { receiveMessenger } from "../config/configSocket";
+import socket from "../config/configSocket";
+import chatApi from "../api/chatApi";
 const ChatScreen = () => {
-  const [messages, setMessages] = useState([
-    { id: "1", sender: "John", content: "Hello!" },
-    { id: "2", sender: "You", content: "Hi there!" },
-    // ... more messages
-  ]);
+  const userSender = useSelector((state) => state.userLogin.user);
+
+  const route = useRoute();
+  const userReceiver = route.params.user;
+  const [messages, setMessages] = useState([]);
 
   const [newMessage, setNewMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isIconPickerModalVisible, setIconPickerModalVisible] = useState(false);
+  const [receivedMessage, setReceivedMessage] = useState(""); // State để lưu trữ nội dung nhận được
+  const formatTime = (time) => {
+    const date = new Date(time);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours}:${minutes}`;
+  };
+  console.log("Messages:", messages);
+  const getAllChat = async () => {
+    const data = {
+      sender: userSender.phone,
+      receiver: userReceiver.phone,
+    };
+    const res = await chatApi.getAllChat(data);
+    setMessages(res.DT);
+  };
+  useEffect(() => {
+    socket.on("receiveMessenger", (res) => {
+      console.log("Res:", res);
+      setMessages((prevState) => [
+        ...prevState,
+        {
+          sender: userReceiver.name,
+          text: res.text,
+          receiver: userSender.name,
+          createdAt: res.createdAt,
+        },
+      ]);
+    });
+    getAllChat();
+  }, [socket]);
 
   const iconRef = useRef(null);
   const navigation = useNavigation();
@@ -46,20 +82,35 @@ const ChatScreen = () => {
     // setIconPickerModalVisible(false);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (newMessage.trim() !== "" || selectedImage) {
       setMessages([
         ...messages,
         {
-          id: messages.length + 1,
-          sender: "You",
-          content: newMessage,
-          image: selectedImage,
+          _id: messages.length + 1,
+          sender: userSender._id,
+          text: newMessage,
+          receiver: userReceiver._id,
+          createdAt: Date.now(),
         },
       ]);
       setNewMessage("");
       setSelectedImage(null);
     }
+    const data = {
+      sender: userSender.phone,
+      receiver: userReceiver.phone,
+      text: newMessage,
+      createdAt: Date.now(),
+    };
+    senderMessenger({
+      sender: data.sender,
+      receiver: data.receiver,
+      text: data.text,
+      createdAt: data.createdAt,
+    });
+    const res = await chatApi.sendMessenger(data);
+    console.log(res);
   };
 
   const handleSendWithLike = () => {
@@ -70,14 +121,16 @@ const ChatScreen = () => {
   const renderItem = ({ item }) => (
     <View
       style={
-        item.sender === "You" ? styles.sentMessage : styles.receivedMessage
+        item.sender === userSender._id
+          ? styles.sentMessage
+          : styles.receivedMessage
       }
     >
-      {item.image && (
+      {/* {item.image && (
         <Image source={{ uri: item.image }} style={styles.messageImage} />
-      )}
-
-      <Text style={styles.messageContent}>{item.content}</Text>
+      )} */}
+      <Text style={styles.messageContent}>{item.text}</Text>
+      <Text style={styles.messageTime}>{formatTime(item.createdAt)}</Text>
     </View>
   );
 
@@ -94,7 +147,7 @@ const ChatScreen = () => {
     <View style={styles.screen}>
       <View style={styles.header}>
         {renderBackButton()}
-        <Text style={styles.headerText}>John</Text>
+        <Text style={styles.headerText}>{userReceiver.name}</Text>
         <TouchableOpacity
           onPress={handleSendWithLike}
           style={styles.likeButton}
@@ -103,7 +156,7 @@ const ChatScreen = () => {
 
       <FlatList
         data={messages}
-        keyExtractor={(item) => item.id}
+        // keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
 
@@ -126,7 +179,7 @@ const ChatScreen = () => {
           style={styles.input}
           placeholder="Type a message..."
           value={newMessage}
-          onChangeText={(text) => setNewMessage(text)}
+          onChangeText={(e) => setNewMessage(e)}
         />
 
         <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
@@ -150,13 +203,19 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#dcdfe6",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#3498db",
     paddingVertical: 10,
+    borderRadius: 10,
     paddingLeft: 10,
+  },
+  messageTime: {
+    fontSize: 12,
+    color: "gray",
   },
   headerText: {
     color: "white",
@@ -170,7 +229,7 @@ const styles = StyleSheet.create({
   },
   sentMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#3498db",
+    backgroundColor: "#e5efff",
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -178,7 +237,7 @@ const styles = StyleSheet.create({
   },
   receivedMessage: {
     alignSelf: "flex-start",
-    backgroundColor: "#ddd",
+    backgroundColor: "white",
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -190,6 +249,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   messageContent: {
+    fontSize: 15,
+    fontWeight: "500",
     color: "black",
   },
   inputContainer: {

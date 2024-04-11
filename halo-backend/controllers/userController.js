@@ -72,6 +72,18 @@ const handleLogin = async (req, res) => {
     });
   }
 };
+const handlerGetDataById = async (req, res) => {
+  try {
+    let data = await userService.getDataById(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 // const handlerLoginUser = async (req, res) => {
 //   try {
 //     if (req.user) {
@@ -162,4 +174,5 @@ module.exports = {
   handleConfirmAccount,
   handlerNewOtp,
   handlerForgotPassword,
+  handlerGetDataById,
 };

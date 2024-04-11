@@ -2,6 +2,7 @@ import express from "express";
 import userController from "../controllers/userController";
 import userService from "../services/userServices";
 import friendController from "../controllers/friendController";
+import chatController from "../controllers/chatController";
 // import { checkCookie } from "../middleware/jwtMiddleware";
 const router = express.Router();
 /**
@@ -21,6 +22,7 @@ const initAppRoutes = (app) => {
   router.post("/confirm-account", userController.handleConfirmAccount);
   router.post("/new-otp", userController.handlerNewOtp);
   router.post("/forgot-password", userController.handlerForgotPassword);
+  router.get("/get-data", userController.handlerGetDataById);
   //Friend Route
   router.post("/friend-request", friendController.sendAddFriend);
   router.post("/cancel-add-friend", friendController.cancelSendAddFriend);
@@ -30,6 +32,10 @@ const initAppRoutes = (app) => {
   );
   router.post("/confirm-friend-request", friendController.confirmAddFriend);
   router.post("/delete-friend", friendController.deleteFriend);
+  // Chat Route
+  router.post("/send-messenger", chatController.handlerSendMessenger);
+  router.post("/get-all-chat", chatController.handlerGetAllChatPrivate);
+
   return app.use("/", router);
 };
 export default initAppRoutes;

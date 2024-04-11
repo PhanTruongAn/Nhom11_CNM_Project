@@ -54,6 +54,17 @@ const handlerRefreshAccount = (dispatch) => {
 const handleOffReFreshAccount = () => {
   socket.off("refresh");
 };
+
+const senderMessenger = (data) => {
+  socket.emit("sendMessenger", data);
+};
+const receiveMessenger = () => {
+  socket.on("receiveMessenger", (call) => {
+    return call;
+  });
+  console.log("Check");
+};
+export default socket;
 export {
   handleCustomClient,
   handlerSendText,
@@ -67,4 +78,6 @@ export {
   handlerConfirmAddFriend,
   handlerDeleteFriend,
   handlerDelete,
+  senderMessenger,
+  receiveMessenger,
 };

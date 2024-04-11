@@ -9,7 +9,12 @@ const configSocket = (server) => {
       credentials: true,
     },
   });
-
+  const formatTime = (time) => {
+    const date = new Date(time);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours}:${minutes}`;
+  };
   io.on("connection", (socket) => {
     socket.on("storeClientInfo", (data) => {
       if (data && data.customId) {
@@ -135,6 +140,36 @@ const configSocket = (server) => {
         }
       }
     });
+
+    //Chat Socket
+    socket.on("sendMessenger", (data) => {
+      let sender = data.sender;
+      let receiver = data.receiver;
+      let textReceive = data.text;
+      let createdAtReceive = data.createdAt;
+      const dataResend = {
+        text: textReceive,
+        createdAt: createdAtReceive,
+      };
+      console.log("Data:", dataResend);
+      if (clients && clients.length > 0) {
+        let index = clients.findIndex(
+          (item) => item.customId.localeCompare(receiver) === 0
+        );
+        if (index !== -1) {
+          socket
+            .to(clients[index].clientId)
+            .emit("receiveMessenger", dataResend, () => {
+              // console.log("Sender:", sender);
+              // console.log("Receiver:", receiver);
+              // console.log("Text:", text);
+            });
+        } else {
+          console.log("test error");
+        }
+      }
+    });
+
     socket.on("disconnect", () => {
       socket.disconnect();
       console.log(`${socket.id}  user disconnected`);

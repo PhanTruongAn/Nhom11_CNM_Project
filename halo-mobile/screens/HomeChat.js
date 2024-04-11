@@ -15,6 +15,7 @@ import extendFunctions from "../constants/extendFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, updateUser } from "../redux/userSlice";
 import { handleCustomClient } from "../config/configSocket";
+import chatApi from "../api/chatApi";
 const ChatListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [isReady, setIsReady] = useState(false); // Flag to track if useEffect is done
@@ -63,7 +64,7 @@ const ChatListScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ChatScreen");
+        navigation.navigate("ChatScreen", { user: item });
       }}
       style={styles.itemContainer}
     >

@@ -139,6 +139,23 @@ const searchByPhone = async (user) => {
     EC: 0,
   };
 };
+const getDataById = async (user) => {
+  console.log(user);
+  const account = await User.findOne(
+    { _id: user._id },
+    "_id name phone email avatar sex dateOfBirth isActive friendRequests sendFriendRequests friends"
+  ).exec();
+  if (!account) {
+    return {
+      EM: "Account is not exist!",
+    };
+  }
+  console.log("User:", account);
+  return {
+    DT: account,
+    EC: 0,
+  };
+};
 // Update Information User
 const updateUser = async (newData) => {
   try {
@@ -271,4 +288,5 @@ module.exports = {
   confirmAccount,
   resendOTP,
   forgotPassword,
+  getDataById,
 };
