@@ -43,7 +43,7 @@ const userApi = {
   },
   getData: (user) => {
     const url = "/get-data";
-    return axiosClient.get(url, user);
+    return axiosClient.post(url, user);
   },
 };
 export default userApi;

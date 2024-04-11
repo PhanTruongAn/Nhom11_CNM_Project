@@ -16,22 +16,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, updateUser } from "../redux/userSlice";
 import { handleCustomClient } from "../config/configSocket";
 import chatApi from "../api/chatApi";
+import userApi from "../api/userApi";
+import { initUsers } from "../redux/conversationSlice";
 const ChatListScreen = ({ navigation }) => {
+  const conversation = useSelector((state) => state.usersInit.users);
+  // console.log("Conversation:", conversation);
   const dispatch = useDispatch();
   const [isReady, setIsReady] = useState(false); // Flag to track if useEffect is done
   const [isDataLoaded, setIsDataLoaded] = useState(false); // Flag to track if data is loaded from Redux
   const [chatList, setChatList] = useState([]);
-
   const searchInputRef = useRef(null);
+
+  const getData = async (data) => {
+    const req = await userApi.getData(data);
+    if (req) {
+      dispatch(updateUser(req.DT));
+      const conversation = await chatApi.getConversation(req.DT);
+      dispatch(initUsers(conversation.DT));
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await AsyncStorage.getItem("login");
-        if (data) {
-          dispatch(updateUser(JSON.parse(data)));
-          // console.log("DataStorage:", JSON.parse(data));
-        }
+        const convert = JSON.parse(data);
+        getData(convert);
+
+        // if (data) {
+        //   // dispatch(updateUser(JSON.parse(data)));
+        //   // console.log("DataStorage:", JSON.parse(data));
+        // }
+
         setIsDataLoaded(true); // Marking data as loaded from Redux
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -60,6 +76,21 @@ const ChatListScreen = ({ navigation }) => {
   const onFocusSearch = () => {
     navigation.navigate("SearchScreen");
   };
+  const handlerTime = (timeString) => {
+    const currentTime = Date.now();
+    // Chuyển đổi chuỗi thời gian thành giá trị thời gian Unix
+    const messageTime = new Date(timeString).getTime();
+    // Tính chênh lệch thời gian
+    const timeDiff = currentTime - messageTime;
+
+    // Chuyển đổi chênh lệch thời gian sang giờ hoặc phút
+    const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutesDiff = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    if (minutesDiff > 60) {
+      return hoursDiff;
+    }
+    return minutesDiff;
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -78,10 +109,12 @@ const ChatListScreen = ({ navigation }) => {
       </View>
       <View style={styles.content}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.message}>Hello</Text>
+        <Text style={styles.message}>{item.lastMessage}</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.time}>1 giờ</Text>
+        <Text style={styles.time}>
+          {handlerTime(item.lastMessageTime)} phút
+        </Text>
         {item.unreadCount > 0 && (
           <View style={styles.unreadBadge}>
             <Text>{item.unreadCount}</Text>
@@ -109,7 +142,7 @@ const ChatListScreen = ({ navigation }) => {
           Search
         </Text>
       </TouchableOpacity>
-      <FlatList data={userLogin.friends} renderItem={renderItem} />
+      <FlatList data={conversation} renderItem={renderItem} />
     </View>
   );
 };

@@ -22,7 +22,7 @@ const initAppRoutes = (app) => {
   router.post("/confirm-account", userController.handleConfirmAccount);
   router.post("/new-otp", userController.handlerNewOtp);
   router.post("/forgot-password", userController.handlerForgotPassword);
-  router.get("/get-data", userController.handlerGetDataById);
+  router.post("/get-data", userController.handlerGetDataById);
   //Friend Route
   router.post("/friend-request", friendController.sendAddFriend);
   router.post("/cancel-add-friend", friendController.cancelSendAddFriend);
@@ -35,7 +35,7 @@ const initAppRoutes = (app) => {
   // Chat Route
   router.post("/send-messenger", chatController.handlerSendMessenger);
   router.post("/get-all-chat", chatController.handlerGetAllChatPrivate);
-
+  router.post("/get-conversation", chatController.handlerGetAllConversation);
   return app.use("/", router);
 };
 export default initAppRoutes;

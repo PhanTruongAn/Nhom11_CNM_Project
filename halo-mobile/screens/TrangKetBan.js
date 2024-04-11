@@ -15,6 +15,9 @@ const TrangKetBan = ({ navigation }) => {
   const userLogin = useSelector((state) => state.userLogin.user);
   const route = useRoute();
   const user = route.params.searchResults;
+  const handlerSendMessenger = () => {
+    navigation.navigate("ChatScreen", { user: user });
+  };
   const handlerSendAddFriend = async () => {
     let data = {
       phoneSender: userLogin.phone,
@@ -33,7 +36,7 @@ const TrangKetBan = ({ navigation }) => {
       receiver: user.phone,
       user: senderData,
     });
-    await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+    // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
     console.log("Req:", req);
   };
   const image = extendFunctions.randomImage();
@@ -77,7 +80,10 @@ const TrangKetBan = ({ navigation }) => {
         </Text>
       </View>
       <View style={styles.action}>
-        <TouchableOpacity style={styles.BtnNhanTin}>
+        <TouchableOpacity
+          onPress={handlerSendMessenger}
+          style={styles.BtnNhanTin}
+        >
           <Octicons name="comment-discussion" size={24} color="blue" />
           <Text
             style={{

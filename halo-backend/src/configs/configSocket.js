@@ -117,7 +117,7 @@ const configSocket = (server) => {
               console.log("ResendData:", resendData);
             });
         } else {
-          console.log("test error");
+          // console.log("test error");
         }
       }
     });
@@ -151,7 +151,6 @@ const configSocket = (server) => {
         text: textReceive,
         createdAt: createdAtReceive,
       };
-      console.log("Data:", dataResend);
       if (clients && clients.length > 0) {
         let index = clients.findIndex(
           (item) => item.customId.localeCompare(receiver) === 0

@@ -62,7 +62,7 @@ const EditInformation = ({ navigation }) => {
     };
     const req = await userApi.updateUser(newData);
     dispatch(updateUser(req.DT));
-    await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+    // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
     Alert.alert("Cập nhật thành công!");
   };
 

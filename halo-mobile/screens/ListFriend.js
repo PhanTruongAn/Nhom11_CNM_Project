@@ -124,13 +124,13 @@ const FriendListScreen = ({ navigation }) => {
           tabBarIcon: ({ color, size }) => {
             let iconName;
 
-            if (route.name === "Friends") {
+            if (route.name === "Bạn bè") {
               iconName = "people";
-            } else if (route.name === "Groups") {
+            } else if (route.name === "Nhóm") {
               iconName = "business";
-            } else if (route.name === "Friend Request") {
+            } else if (route.name === "Lời mời") {
               iconName = "people-circle";
-            } else if (route.name === "Add Friend") {
+            } else if (route.name === "Đã gửi") {
               iconName = "list";
             }
 
@@ -139,10 +139,10 @@ const FriendListScreen = ({ navigation }) => {
           },
         })}
       >
-        <Tab.Screen name="Friends" component={FriendListComponent} />
-        <Tab.Screen name="Add Friend" component={FriendRequestComponent} />
-        <Tab.Screen name="Friend Request" component={AddFriendComponent} />
-        <Tab.Screen name="Groups" component={GroupListComponent} />
+        <Tab.Screen name="Bạn bè" component={FriendListComponent} />
+        <Tab.Screen name="Đã gửi" component={FriendRequestComponent} />
+        <Tab.Screen name="Lời mời" component={AddFriendComponent} />
+        <Tab.Screen name="Nhóm" component={GroupListComponent} />
       </Tab.Navigator>
     </View>
   );
@@ -194,7 +194,7 @@ const FriendListComponent = () => {
               const req = await friendApi.deleteFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
-              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+              // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>
@@ -247,7 +247,7 @@ const AddFriendComponent = () => {
               const req = await friendApi.confirmAddFriend(data);
               console.log("CheckReq:", req);
               dispatch(updateUser(req.DT));
-              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+              // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
@@ -282,7 +282,7 @@ const AddFriendComponent = () => {
               });
               const req = await friendApi.cancelAddFriendByReceiver(data);
               dispatch(updateUser(req.DT));
-              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+              // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 15, alignSelf: "center", color: "white" }}>
@@ -341,7 +341,7 @@ const FriendRequestComponent = () => {
               const req = await friendApi.cancelAddFriend(data);
 
               dispatch(updateUser(req.DT));
-              await AsyncStorage.setItem("login", JSON.stringify(req.DT));
+              // await AsyncStorage.setItem("login", JSON.stringify(req.DT));
             }}
           >
             <Text style={{ fontSize: 16, alignSelf: "center", color: "white" }}>

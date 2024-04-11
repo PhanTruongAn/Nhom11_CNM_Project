@@ -9,5 +9,9 @@ const chatApi = {
     const url = "/get-all-chat";
     return axiosClient.post(url, data);
   },
+  getConversation: (data) => {
+    const url = "/get-conversation";
+    return axiosClient.post(url, data);
+  },
 };
 export default chatApi;

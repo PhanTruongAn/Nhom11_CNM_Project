@@ -9,7 +9,7 @@ import {
   Modal,
   Text,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 // import ImagePicker from "react-native-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import IconPickerModal from "./IconPickerModal";
@@ -19,13 +19,14 @@ import { senderMessenger } from "../config/configSocket";
 import { receiveMessenger } from "../config/configSocket";
 import socket from "../config/configSocket";
 import chatApi from "../api/chatApi";
+import { lastMessenger } from "../redux/conversationSlice";
 const ChatScreen = () => {
+  const dispatch = useDispatch();
   const userSender = useSelector((state) => state.userLogin.user);
-
   const route = useRoute();
   const userReceiver = route.params.user;
+  console.log("pa", userReceiver);
   const [messages, setMessages] = useState([]);
-
   const [newMessage, setNewMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isIconPickerModalVisible, setIconPickerModalVisible] = useState(false);
@@ -111,6 +112,14 @@ const ChatScreen = () => {
     });
     const res = await chatApi.sendMessenger(data);
     console.log(res);
+
+    /// Lấy đối tượng cuối cùng ra từ mảng messenger
+    // const lastMessage = messages[messages.length - 1];
+    // const dataLastMessage = {
+    //   ...userReceiver,
+    //   lastMessage: lastMessage.text,
+    // };
+    // dispatch(lastMessenger(dataLastMessage));
   };
 
   const handleSendWithLike = () => {
@@ -139,15 +148,27 @@ const ChatScreen = () => {
 
   const renderBackButton = () => (
     <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Ionicons name="chevron-back" size={24} color="white" />
+      <AntDesign name="arrowleft" size={24} color="white" />
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        {renderBackButton()}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
         <Text style={styles.headerText}>{userReceiver.name}</Text>
+        <TouchableOpacity style={{ position: "absolute", right: 120 }}>
+          <Feather name="phone" size={22} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ position: "absolute", right: 66 }}>
+          <Feather name="video" size={25} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ position: "absolute", right: 18 }}>
+          <Feather name="list" size={25} color="white" />
+        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={handleSendWithLike}
           style={styles.likeButton}
@@ -165,14 +186,14 @@ const ChatScreen = () => {
           style={styles.imagePickerButton}
           onPress={handleImagePick}
         >
-          <Ionicons name="image" size={24} color="white" />
+          <Ionicons name="image" size={20} color="white" />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.iconPickerButton}
           onPress={handleOpenIconPicker}
         >
-          <Ionicons name="happy" size={24} color="white" />
+          <Ionicons name="happy" size={20} color="white" />
         </TouchableOpacity>
 
         <TextInput
@@ -183,8 +204,8 @@ const ChatScreen = () => {
         />
 
         <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-          <Text style={styles.sendButtonText}>Gửi</Text>
-          <Ionicons name="send" size={24} color="white" />
+          {/* <Text style={styles.sendButtonText}>Gửi</Text> */}
+          <Ionicons name="send" size={20} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -203,7 +224,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#dcdfe6",
+    backgroundColor: "#c1c1bf",
   },
   header: {
     flexDirection: "row",
@@ -219,15 +240,17 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "500",
+    marginLeft: 15,
+    marginTop: -15,
   },
   likeButton: {
     padding: 10,
     marginLeft: "auto",
   },
   sentMessage: {
+    marginTop: 15,
     alignSelf: "flex-end",
     backgroundColor: "#e5efff",
     borderRadius: 8,
@@ -236,6 +259,7 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
   },
   receivedMessage: {
+    marginTop: 15,
     alignSelf: "flex-start",
     backgroundColor: "white",
     borderRadius: 8,
@@ -269,6 +293,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   input: {
+    marginLeft: 10,
     flex: 1,
     padding: 10,
     backgroundColor: "#eee",
