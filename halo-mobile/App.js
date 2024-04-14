@@ -20,6 +20,7 @@ import NewPassword from "./screens/NewPassword";
 import SearchInfo from "./screens/SearchInfo";
 import BaCham from "./screens/BaCham";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Test from "./screens/Test";
 const Stack = createNativeStackNavigator();
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -156,8 +157,16 @@ const App = () => {
             name="BaCham"
             component={BaCham}
           ></Stack.Screen>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="Test"
+            component={Test}
+          ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
+      {/* <Test /> */}
     </Provider>
   );
 };

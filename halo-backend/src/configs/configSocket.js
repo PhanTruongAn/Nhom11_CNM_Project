@@ -148,7 +148,9 @@ const configSocket = (server) => {
       let textReceive = data.text;
       let createdAtReceive = data.createdAt;
       const dataResend = {
+        idMessenger: data.idMessenger,
         text: textReceive,
+        isDeleted: data.isDeleted,
         createdAt: createdAtReceive,
       };
       if (clients && clients.length > 0) {
@@ -163,12 +165,43 @@ const configSocket = (server) => {
               // console.log("Receiver:", receiver);
               // console.log("Text:", text);
             });
+          console.log("Data resend:", dataResend);
         } else {
           console.log("test error");
         }
       }
     });
 
+    //Retrieve Messenger Socket
+    socket.on("retrieveMessenger", (data) => {
+      let sender = data.sender;
+      let receiver = data.receiver;
+      let textReceive = data.text;
+      let createdAtReceive = data.createdAt;
+      const dataResend = {
+        idMessenger: data.idMessenger,
+        text: textReceive,
+        isDeleted: data.isDeleted,
+        createdAt: createdAtReceive,
+      };
+      if (clients && clients.length > 0) {
+        let index = clients.findIndex(
+          (item) => item.customId.localeCompare(receiver) === 0
+        );
+        if (index !== -1) {
+          socket
+            .to(clients[index].clientId)
+            .emit("retrieveMes", dataResend, () => {
+              // console.log("Sender:", sender);
+              // console.log("Receiver:", receiver);
+              // console.log("Text:", text);
+            });
+          console.log("Data retrieve:", dataResend);
+        } else {
+          console.log("test error");
+        }
+      }
+    });
     socket.on("disconnect", () => {
       socket.disconnect();
       console.log(`${socket.id}  user disconnected`);

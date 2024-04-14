@@ -9,28 +9,38 @@ import {
   Modal,
   Text,
 } from "react-native";
-import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Ionicons,
+  Feather,
+  MaterialIcons,
+} from "@expo/vector-icons";
 // import ImagePicker from "react-native-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import IconPickerModal from "./IconPickerModal";
+import { Avatar } from "@rneui/themed";
 import { useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { senderMessenger } from "../config/configSocket";
 import { receiveMessenger } from "../config/configSocket";
+import { retrieveMessenger } from "../config/configSocket";
 import socket from "../config/configSocket";
 import chatApi from "../api/chatApi";
 import { lastMessenger } from "../redux/conversationSlice";
+import { Pressable } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 const ChatScreen = () => {
+  const route = useRoute();
   const dispatch = useDispatch();
   const userSender = useSelector((state) => state.userLogin.user);
-  const route = useRoute();
   const userReceiver = route.params.user;
-  console.log("pa", userReceiver);
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isIconPickerModalVisible, setIconPickerModalVisible] = useState(false);
   const [receivedMessage, setReceivedMessage] = useState(""); // State để lưu trữ nội dung nhận được
+  const [selectedMessage, setSelectedMessage] = useState(null);
   const formatTime = (time) => {
     const date = new Date(time);
     const hours = date.getHours();
@@ -52,9 +62,11 @@ const ChatScreen = () => {
       setMessages((prevState) => [
         ...prevState,
         {
-          sender: userReceiver.name,
+          idMessenger: res.idMessenger,
+          isDeleted: res.isDeleted,
+          sender: userReceiver._id,
           text: res.text,
-          receiver: userSender.name,
+          receiver: userSender._id,
           createdAt: res.createdAt,
         },
       ]);
@@ -62,6 +74,25 @@ const ChatScreen = () => {
     getAllChat();
   }, [socket]);
 
+  useEffect(() => {
+    socket.on("retrieveMes", (res) => {
+      console.log("Res:", res);
+      setMessages((prevState) => {
+        const updatedMessages = prevState.map((message) => {
+          if (message.idMessenger === res.idMessenger) {
+            return {
+              ...message,
+              isDeleted: res.isDeleted,
+              // text: res.text,
+              // createdAt: res.createdAt,
+            };
+          }
+          return message;
+        });
+        return updatedMessages;
+      });
+    });
+  }, [socket]);
   const iconRef = useRef(null);
   const navigation = useNavigation();
 
@@ -84,42 +115,34 @@ const ChatScreen = () => {
   };
 
   const handleSend = async () => {
-    if (newMessage.trim() !== "" || selectedImage) {
-      setMessages([
-        ...messages,
-        {
-          _id: messages.length + 1,
-          sender: userSender._id,
-          text: newMessage,
-          receiver: userReceiver._id,
-          createdAt: Date.now(),
-        },
-      ]);
-      setNewMessage("");
-      setSelectedImage(null);
-    }
     const data = {
+      idMessenger: uuidv4(),
       sender: userSender.phone,
       receiver: userReceiver.phone,
       text: newMessage,
       createdAt: Date.now(),
     };
+    if (newMessage.trim() !== "" || selectedImage) {
+      setMessages([
+        ...messages,
+        {
+          ...data,
+          sender: userSender._id,
+          text: newMessage,
+          receiver: userReceiver._id,
+          isDeleted: false,
+        },
+      ]);
+      setNewMessage("");
+      setSelectedImage(null);
+    }
+
     senderMessenger({
-      sender: data.sender,
-      receiver: data.receiver,
-      text: data.text,
-      createdAt: data.createdAt,
+      ...data,
+      isDeleted: false,
     });
     const res = await chatApi.sendMessenger(data);
     console.log(res);
-
-    /// Lấy đối tượng cuối cùng ra từ mảng messenger
-    // const lastMessage = messages[messages.length - 1];
-    // const dataLastMessage = {
-    //   ...userReceiver,
-    //   lastMessage: lastMessage.text,
-    // };
-    // dispatch(lastMessenger(dataLastMessage));
   };
 
   const handleSendWithLike = () => {
@@ -127,24 +150,87 @@ const ChatScreen = () => {
     // Ví dụ: setMessages([...], setNewMessage(""), setSelectedImage(null), ...);
   };
 
-  const renderItem = ({ item }) => (
-    <View
-      style={
-        item.sender === userSender._id
-          ? styles.sentMessage
-          : styles.receivedMessage
+  // Cập nhật tin nhắn được chọn khi người dùng ấn vào
+  const handleSelectMessage = (messageId) => {
+    if (selectedMessage === messageId) {
+      // Nếu tin nhắn đã được chọn rồi, ẩn nó đi
+      setSelectedMessage(null);
+    } else {
+      // Nếu tin nhắn chưa được chọn, hiển thị nó
+      setSelectedMessage(messageId);
+    }
+  };
+  const handleDeleteMessage = async (messageId) => {
+    const updatedMessages = messages.map((message) => {
+      if (message.idMessenger === messageId) {
+        return { ...message, isDeleted: true };
       }
-    >
-      {/* {item.image && (
-        <Image source={{ uri: item.image }} style={styles.messageImage} />
-      )} */}
-      <Text style={styles.messageContent}>{item.text}</Text>
-      <Text style={styles.messageTime}>{formatTime(item.createdAt)}</Text>
-    </View>
+      return message;
+    });
+    const user = {
+      idMessenger: selectedMessage,
+    };
+    setMessages(updatedMessages);
+    const res = await chatApi.retrieveMessenger(user);
+    const data = {
+      ...res.DT,
+      sender: userSender.phone,
+      receiver: userReceiver.phone,
+    };
+    retrieveMessenger({ ...data });
+    console.log("Data update:", res.DT);
+  };
+  const renderItem = ({ item }) => (
+    <Pressable onPress={() => handleSelectMessage(item.idMessenger)}>
+      <View
+        style={
+          item.sender === userSender._id
+            ? styles.sentMessage
+            : styles.receivedMessage
+        }
+      >
+        {selectedMessage === item.idMessenger && (
+          <View
+            style={{
+              position: "absolute",
+              left: -110,
+              top: 30,
+              backgroundColor: "#f1f1f5",
+              borderRadius: 8,
+              height: 25,
+              width: 100,
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <TouchableOpacity>
+              <MaterialIcons name="delete" size={20} color="gray" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Ionicons
+                name="reload"
+                size={20}
+                color="gray"
+                onPress={() => handleDeleteMessage(item.idMessenger)}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <AntDesign name="back" size={20} color="gray" />
+            </TouchableOpacity>
+          </View>
+        )}
+        <Text style={styles.messageContent}>
+          {item.isDeleted ? "Tin nhắn đã thu hồi" : item.text}
+        </Text>
+        <Text style={styles.messageTime}>
+          {item.isDeleted ? null : formatTime(item.createdAt)}
+        </Text>
+      </View>
+    </Pressable>
   );
 
-  const headerTitle =
-    messages.length > 0 ? messages[messages.length - 1].sender : "";
+  // const headerTitle =
+  // messages.length > 0 ? messages[messages.length - 1].sender : "";
 
   const renderBackButton = () => (
     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -256,7 +342,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
-    maxWidth: "70%",
+    maxWidth: "50%",
   },
   receivedMessage: {
     marginTop: 15,
@@ -265,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
-    maxWidth: "70%",
+    maxWidth: "50%",
   },
   messageImage: {
     width: 100,

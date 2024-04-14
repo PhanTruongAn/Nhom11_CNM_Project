@@ -15,6 +15,14 @@ const privateMessengerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    idMessenger: {
+      type: String,
+      required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

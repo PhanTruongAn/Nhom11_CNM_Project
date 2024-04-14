@@ -13,5 +13,9 @@ const chatApi = {
     const url = "/get-conversation";
     return axiosClient.post(url, data);
   },
+  retrieveMessenger: (data) => {
+    const url = "/retrieve-messenger";
+    return axiosClient.post(url, data);
+  },
 };
 export default chatApi;

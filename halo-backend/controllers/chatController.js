@@ -51,8 +51,25 @@ const handlerGetAllConversation = async (req, res) => {
     });
   }
 };
+const handlerRetrieveMessenger = async (req, res) => {
+  try {
+    let data = await chatService.retrieveMessenger(req.body);
+    return res.status(200).json({
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log("server " + error);
+    return res.status(500).json({
+      EM: "error from sever",
+      EC: "-1",
+      DT: "",
+    });
+  }
+};
 module.exports = {
   handlerSendMessenger,
   handlerGetAllChatPrivate,
   handlerGetAllConversation,
+  handlerRetrieveMessenger,
 };

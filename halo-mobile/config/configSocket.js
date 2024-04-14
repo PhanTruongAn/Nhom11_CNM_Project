@@ -64,6 +64,9 @@ const receiveMessenger = () => {
   });
   console.log("Check");
 };
+const retrieveMessenger = (data) => {
+  socket.emit("retrieveMessenger", data);
+};
 export default socket;
 export {
   handleCustomClient,
@@ -80,4 +83,5 @@ export {
   handlerDelete,
   senderMessenger,
   receiveMessenger,
+  retrieveMessenger,
 };

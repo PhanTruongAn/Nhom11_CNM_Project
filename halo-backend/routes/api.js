@@ -36,6 +36,7 @@ const initAppRoutes = (app) => {
   router.post("/send-messenger", chatController.handlerSendMessenger);
   router.post("/get-all-chat", chatController.handlerGetAllChatPrivate);
   router.post("/get-conversation", chatController.handlerGetAllConversation);
+  router.post("/retrieve-messenger", chatController.handlerRetrieveMessenger);
   return app.use("/", router);
 };
 export default initAppRoutes;

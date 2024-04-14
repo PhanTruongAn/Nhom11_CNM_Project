@@ -8,6 +8,7 @@ const sendMessage = async (user) => {
     }).exec();
     if (sender && receiver && user.text) {
       const chat = new PrivateMessenger({
+        idMessenger: user.idMessenger,
         sender: sender,
         receiver: receiver,
         text: user.text,
@@ -50,12 +51,23 @@ const getAllChatPrivate = async (data) => {
       const remainingDocuments = Math.max(0, totalDocuments - data.skip);
       const limit = Math.min(6, remainingDocuments);
 
-      let test = await PrivateMessenger.find({
-        $or: [
-          { sender: sender._id, receiver: receiver._id },
-          { sender: receiver._id, receiver: sender._id },
-        ],
-      })
+      let test = await PrivateMessenger.find(
+        {
+          $or: [
+            { sender: sender._id, receiver: receiver._id },
+            { sender: receiver._id, receiver: sender._id },
+          ],
+        },
+        {
+          idMessenger: 1,
+          sender: 1,
+          receiver: 1,
+          text: 1,
+          isDeleted: 1,
+          createdAt: 1,
+          _id: 0, // Loại bỏ trường _id nếu không cần thiết
+        }
+      )
         .sort({ createdAt: "desc" })
         .limit(limit)
         .skip(data.skip)
@@ -242,9 +254,38 @@ const findDistinctUsers = async (user) => {
     };
   }
 };
+const retrieveMessenger = async (user) => {
+  const idMessenger = user.idMessenger;
+  try {
+    const res = await PrivateMessenger.findOneAndUpdate(
+      { idMessenger: idMessenger },
+      {
+        $set: {
+          isDeleted: true,
+        },
+      },
+      {
+        new: true,
+        select: "idMessenger sender receiver text isDeleted createdAt",
+      }
+    );
 
+    if (!res) {
+      console.log("Không tìm thấy tin nhắn!");
+      return null;
+    }
+    return {
+      DT: res,
+      EC: 0,
+    };
+  } catch (error) {
+    console.error("Lỗi từ server:", error);
+    throw error;
+  }
+};
 module.exports = {
   sendMessage,
   getAllChatPrivate,
   findDistinctUsers,
+  retrieveMessenger,
 };
